@@ -111,7 +111,7 @@ export function updateUsername(username: string): void {
     } catch (err) {
         // FAILSAFE: default object if reading fails
         config = {
-            dbUrl: "",
+            dbUrl: "postgres://example",
             currentUserName: ""
         };
     }
