@@ -21,6 +21,7 @@ function getConfigFilePath(): string {
     return path.resolve(process.cwd(), DATA_DIR, DATA_FILE);
 }
 
+
 function readConfig(): Config {
     const filePath = getConfigFilePath();
 
@@ -29,10 +30,11 @@ function readConfig(): Config {
     }
 
     try {
-        const dataString = fs.readFileSync(filePath, "utf-8");
-        const dataObject = JSON.parse(dataString);
-        const dataValidated = validateConfig(dataObject);
-        return dataValidated;
+        const dataRaw = fs.readFileSync(filePath, "utf-8"); // string
+        const dataParsed = JSON.parse(dataRaw);             // object in snake_case
+        const dataConfig = validateConfig(dataParsed);      // object in camelCase
+        return dataConfig;
+
     } catch (err: any) {
         if (err.message === "VALIDATION_FAIL") {
             throw new Error(`Error: validation failure for file: ${filePath}`);
@@ -42,6 +44,27 @@ function readConfig(): Config {
             throw new Error(`Error: failure reading file: ${filePath}`);
         }    }
 }
+
+
+function writeConfig(cfg: Config): void {
+    const filePath = getConfigFilePath();
+
+    try {
+        // Convert camelCase Config back to snake_case for the JSON file
+        const dataToSave = {
+            db_url: cfg.dbUrl,
+            current_user_name: cfg.currentUserName
+        };
+
+        // Convert to string and write to file
+        const dataString = JSON.stringify(dataToSave, null, 2);
+        fs.writeFileSync(filePath, dataString, "utf-8");
+
+    } catch (err: any) {
+        throw new Error(`Error: could not write to file: ${filePath}`);
+    }
+}
+
 
 function validateConfig(dataObject: any): Config {
     if (
@@ -57,4 +80,6 @@ function validateConfig(dataObject: any): Config {
     }
     throw new Error("VALIDATION_FAIL");
 }
+
+
 console.log(readConfig());
