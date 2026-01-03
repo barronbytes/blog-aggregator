@@ -17,12 +17,40 @@ type Config = {
 // --------------------
 // FILE HANDLING
 // --------------------
+
+
+/**
+ * Returns the absolute path for a data file.
+ */
 function getConfigFilePath(): string {
     return path.resolve(process.cwd(), DATA_DIR, DATA_FILE);
 }
 
 
-function readConfig(): Config {
+/**
+ * Returns a valid Config object after validation.
+ * Maps snake_case JSON keys to a typed camelCase Config object.
+ */
+function validateConfig(dataObject: any): Config {
+    if (
+        dataObject !== null &&
+        typeof dataObject === "object" &&
+        typeof dataObject.db_url === "string" &&
+        typeof dataObject.current_user_name === "string"
+    ) {
+        return {
+            dbUrl: dataObject.db_url,
+            currentUserName: dataObject.current_user_name        
+        };
+    }
+    throw new Error("VALIDATION_FAIL");
+}
+
+
+/**
+ * Reads a JSON file, parses content, and returns a valid Config object.
+ */
+export function readConfig(): Config {
     const filePath = getConfigFilePath();
 
     if(!fs.existsSync(filePath)) {
@@ -46,6 +74,10 @@ function readConfig(): Config {
 }
 
 
+/**
+ * Maps a camelCase Config object back to a snake_case JSON structure 
+ * and writes it to a JSON file.
+ */
 function writeConfig(cfg: Config): void {
     const filePath = getConfigFilePath();
 
@@ -66,20 +98,25 @@ function writeConfig(cfg: Config): void {
 }
 
 
-function validateConfig(dataObject: any): Config {
-    if (
-        dataObject !== null &&
-        typeof dataObject === "object" &&
-        typeof dataObject.db_url === "string" &&
-        typeof dataObject.current_user_name === "string"
-    ) {
-        return {
-            dbUrl: dataObject.db_url,
-            currentUserName: dataObject.current_user_name        
+/**
+ * Updates a username property in the JSON file.
+ * If the file is missing or invalid, it's initializes with default values.
+ */
+export function updateUsername(username: string): void {
+    let config: Config;
+
+    try {
+        // Returns object in camelCase
+        config = readConfig();
+    } catch (err) {
+        // FAILSAFE: default object if reading fails
+        config = {
+            dbUrl: "",
+            currentUserName: ""
         };
     }
-    throw new Error("VALIDATION_FAIL");
+
+    // Update the username and write to file
+    config.currentUserName = username;
+    writeConfig(config);
 }
-
-
-console.log(readConfig());
