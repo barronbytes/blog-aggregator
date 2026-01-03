@@ -6,6 +6,8 @@ import fs from "fs";
 // --------------------
 // DECLARATIONS
 // --------------------
+
+
 dotenv.config();
 const DATA_DIR = process.env.DATA_DIR || "no directory";
 const DATA_FILE = process.env.DATA_FILE || "no file";
