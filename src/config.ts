@@ -1,85 +1,38 @@
-import fs from "fs";
-import os from "os";
+import dotenv from "dotenv";
 import path from "path";
+import os from "os";
+import fs from "fs";
 
 
 // --------------------
-// Declarations
+// DECLARATIONS
 // --------------------
 
-const JSON_FILE_PATH = ".gatorconfig.json";
-
-type Config = {
-    dbUrl: string,
-    currentUserName: string
-}
-
+const DATA_DIR = process.env.DATA_DIR || "no directory";
+const DATA_FILE = process.env.DATA_FILE || "no file";
 
 // --------------------
-// Helper Functions
+// FILE HANDLING
 // --------------------
-
 
 function getConfigFilePath(): string {
-    return path.resolve(os.homedir(), JSON_FILE_PATH);
+    return path.resolve(os.homedir(), DATA_DIR, DATA_FILE);
 }
 
-
-function writeConfig(cfg: Config): void {
-    const payload = {
-        db_url: cfg.dbUrl,
-        current_user_name: cfg.currentUserName,
-    }
-
-    fs.writeFileSync(
-        getConfigFilePath(),
-        JSON.stringify(payload, null, 2),
-        "utf-8"
-    );
-}
-
-
-function validateConfig(rawConfig: any): Config {
-    if (
-        rawConfig !== null &&
-        typeof rawConfig === "object" &&
-        typeof rawConfig.db_url === "string" &&
-        typeof rawConfig.current_user_name === "string"
-    ) {
-        return {
-            dbUrl: rawConfig.db_url,
-            currentUserName: rawConfig.current_user_name,
-        };
-    }
-    throw new Error("Error: Invalid file structure.");
-}
-
-
-// --------------------
-// Exported Functions
-// --------------------
-
-
-export function setUser(userName: string): void {
+function readConfig(): string {
     const filePath = getConfigFilePath();
-    let currentConfig: Config;
 
-    if(fs.existsSync(filePath)) {
-        const raw = fs.readFileSync(filePath, "utf-8");
-        currentConfig = validateConfig(JSON.parse(raw));
-    } else {
-        currentConfig = {
-            dbUrl: "",
-            currentUserName: ""
-        };
+    if(!fs.existsSync(filePath)) {
+        throw new Error("Error: invalid file path: ${filePath}");
     }
 
-    currentConfig.currentUserName = userName;
-    writeConfig(currentConfig);
+    try {
+        const dataString = fs.readFileSync(filePath, "utf-8");
+        const dataObject = JSON.parse(dataString);
+        return dataObject;
+    } catch (err) {
+        throw new Error("Error:");
+    }
 }
 
-export function readConfig(): Config {
-    const raw = fs.readFileSync(getConfigFilePath(), "utf-8");
-    const parsed = JSON.parse(raw);
-    return validateConfig(parsed);
-}
+console.log(readConfig());
