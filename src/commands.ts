@@ -10,7 +10,7 @@ import { updateUsername } from "./file-handling.js";
 /**
  * Adds or updates a command handler to the registry.
  */
-function registerCommand(
+export function registerCommand(
     registry: CommandRegistry,
     cmdName: string, 
     handler: CommandHandler
@@ -23,7 +23,7 @@ function registerCommand(
  * Runs a command handler from the registry with its arguments.
  * Throws an error if the command does not exist.
  */
-function runCommand(
+export function runCommand(
     registry: CommandRegistry,
     cmdName: string,
     ...args: string[]
@@ -39,7 +39,7 @@ function runCommand(
 
 
 // --------------------
-// COMMANDS SETUP
+// COMMANDS
 // --------------------
 
 
@@ -47,7 +47,7 @@ function runCommand(
 * Login command sets the username in the config JSON file.
 * Throws an error if exactly one argument for a username is not provided.
 */
-function handlerLogin(cmdName: string, ...args: string[]): void {
+export function handlerLogin(cmdName: string, ...args: string[]): void {
     if (args.length !== 1) {
         throw new Error(`Error: Failed to provide one "${args}" value for a username.`);
     }
