@@ -1,4 +1,4 @@
-import { updateUsername, readConfig } from "./config.js";
+import { updateUsername, readConfig } from "./file-handling.js";
 
 
 function main() {
