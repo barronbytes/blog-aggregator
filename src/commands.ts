@@ -1,8 +1,9 @@
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
+import { updateUsername } from "./file-handling.js";
 
 
 // --------------------
-// COMMAND REGISTRATION
+// COMMANDS SETUP
 // --------------------
 
 
@@ -30,8 +31,28 @@ function runCommand(
     const handler = registry[cmdName];
 
     if (!handler) {
-        throw new Error(`Error: command name "${cmdName}" had no handler function in registry.`);
+        throw new Error(`Error: Failed to provide a "${cmdName}" with a handler function in registry.`);
     }
 
     handler(cmdName, ...args);
+}
+
+
+// --------------------
+// COMMANDS SETUP
+// --------------------
+
+
+/*
+* Login command sets the username in the config JSON file.
+* Throws an error if exactly one argument for a username is not provided.
+*/
+function handlerLogin(cmdName: string, ...args: string[]): void {
+    if (args.length !== 1) {
+        throw new Error(`Error: Failed to provide one "${args}" value for a username.`);
+    }
+
+    const username = args[0];
+    updateUsername(username);
+    console.log(`Username has been set to: ${username}`);
 }
