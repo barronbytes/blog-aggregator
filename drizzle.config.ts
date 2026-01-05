@@ -2,12 +2,13 @@ import { defineConfig } from "drizzle-kit";
 
 
 /*
-* Drizzle Kit configuration file used for schema introspection and migrations.
-* Uses a PostgreSQL connection URL (local dev) to generate SQL artifacts from `src/schemas.ts`.
-*/
+ * Drizzle Kit configuration file for local PostgreSQL connection.
+ * Reads ORM mappings from the `schema` location and generates
+ * helper and migration files to the `out` location.
+ */
 export default defineConfig({
-  schema: "src/schema.ts",
-  out: "src/<path_to_generated_files>",
+  schema: "data/schemas/schema.ts",
+  out: "data/generated",
   dialect: "postgresql",
   dbCredentials: {
     url: "postgresql://postgres:postgres@localhost:5432/gator?sslmode=disable",
