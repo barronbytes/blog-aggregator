@@ -1,15 +1,21 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": "./src", // Location of input (original) TypeScript code
+    "rootDir": ".", // Location of input (original) TypeScript code: both ./src/ and ./data/ directories
     "outDir": "./dist", // Location of output (compiled) JavaScript code
     "strict": true,
     "target": "esnext", // What JavaScript language FEATURES get compiled
     "module": "esnext", // What JavaScript MODULE FORMAT gets compiled
-    "moduleResolution": "Node", // How TypeScript finds imported files (import ... from ...)
+    "moduleResolution": "node", // How TypeScript finds imported files (import ... from ...)
     "esModuleInterop": true,    // How TypeScript handles default imports from CommonJS modules (affects type-checking and compiled JS)
     "skipLibCheck": true // What TypeScript skips during type-checking (.d.ts declaration files in node_modules)
   },
-  "include": ["./src/**/*.ts"], // What TypeScript files to include in compilation
-  "exclude": ["node_modules"]   // What TypeScript files to exclude from compilation
+  "include": [                    // What TypeScript files to include in compilation
+    "src/**/*.ts",                // application code
+    "data/schemas/**/*.ts"        // schema definitions only
+  ],
+  "exclude": [                    // What TypeScript files to exclude from compilation
+    "node_modules",
+    "data/generated"              // ignore generated files
+  ]
 }
