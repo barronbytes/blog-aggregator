@@ -9,8 +9,8 @@ import fs from "fs";
 
 
 dotenv.config();
-const DATA_DIR = process.env.DATA_DIR || "no directory";
-const DATA_FILE = process.env.DATA_FILE || "no file";
+const DB_CONFIG_DIR = process.env.DB_CONFIG_DIR || "no directory";
+const DB_CONFIG_FILE = process.env.DB_CONFIG_FILE || "no file";
 type Config = {
     dbUrl: string,
     currentUserName: string
@@ -25,7 +25,7 @@ type Config = {
  * Returns the absolute path for a data file.
  */
 function getConfigFilePath(): string {
-    return path.resolve(process.cwd(), DATA_DIR, DATA_FILE);
+    return path.resolve(process.cwd(), DB_CONFIG_DIR, DB_CONFIG_FILE);
 }
 
 
