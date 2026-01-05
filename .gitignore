@@ -1,1 +1,5 @@
+# Node.js dependencies
 node_modules/
+
+# Drizzle ORM metadata (auto-generated, can be rebuilt)
+data/generated/meta/

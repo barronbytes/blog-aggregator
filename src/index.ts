@@ -18,7 +18,9 @@ function main() {
 
     // Read and print the JSON file
     const currentConfig = readConfig();
-    console.log(currentConfig);
+    const dbUser = currentConfig.currentUserName;
+    const dbConnection = currentConfig.dbUrl;
+    console.log(`Database information: (user: ${dbUser}, connection: ${dbConnection}`);
 }
 
 

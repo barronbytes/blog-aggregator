@@ -113,7 +113,7 @@ export function updateUsername(username: string): void {
     } catch (err) {
         // FAILSAFE: default object if reading fails
         config = {
-            dbUrl: "postgres://example",
+            dbUrl: "postgresql://postgres:postgres@localhost:5432/gator?sslmode=disable",
             currentUserName: ""
         };
     }
