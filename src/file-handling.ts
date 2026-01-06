@@ -9,8 +9,9 @@ import fs from "fs";
 
 
 dotenv.config();
-const DB_CONFIG_DIR = process.env.DB_CONFIG_DIR || "no directory";
-const DB_CONFIG_FILE = process.env.DB_CONFIG_FILE || "no file";
+const DB_URL = process.env.DB_URL || "";
+const DB_CONFIG_DIR = process.env.DB_CONFIG_DIR || "";
+const DB_CONFIG_FILE = process.env.DB_CONFIG_FILE || "";
 type Config = {
     dbUrl: string,
     currentUserName: string
@@ -101,11 +102,16 @@ function writeConfig(cfg: Config): void {
 
 
 /**
- * Updates a username property in the JSON file.
- * If the file is missing or invalid, it's initializes with default values.
+ * Updates the current user name in the JSON config file.
+ * Requires a valid database connection URL.
+ * If config settings not found, initializes them with default values.
  */
 export function updateUsername(username: string): void {
     let config: Config;
+
+    if (!DB_URL) {
+        throw new Error("Error: DB_URL is required but not set as an environment variable.");
+    }
 
     try {
         // Returns object in camelCase
@@ -113,7 +119,7 @@ export function updateUsername(username: string): void {
     } catch (err) {
         // FAILSAFE: default object if reading fails
         config = {
-            dbUrl: "postgresql://postgres:postgres@localhost:5432/gator?sslmode=disable",
+            dbUrl: DB_URL,
             currentUserName: ""
         };
     }
