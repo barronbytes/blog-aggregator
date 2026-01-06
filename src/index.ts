@@ -4,7 +4,7 @@ import type { CommandRegistry } from "./commands.types.js";
 import * as Cmds from "./commands.js";
 
 
-function main() {
+async function main(): Promise<void> {
     // Register command
     const registry: CommandRegistry = {}
     Cmds.registerCommand(registry, "login", Cmds.handlerLogin);
@@ -13,14 +13,17 @@ function main() {
     const args = getArguments();
     const [cmdName, cmdArgs] = getCmdAndArgs(registry, args);
 
-    // Update username on JSON file
-    Cmds.runCommand(registry, cmdName, ...cmdArgs);
+    // Runs a command handler from registry. Throws error if not found.
+    await Cmds.runCommand(registry, cmdName, ...cmdArgs);
 
     // Read and print the JSON file
     const currentConfig = readConfig();
     const dbUser = currentConfig.currentUserName;
     const dbConnection = currentConfig.dbUrl;
     console.log(`Database information: (user: ${dbUser}, connection: ${dbConnection}`);
+
+    // Exit program
+    process.exit(0);
 }
 
 

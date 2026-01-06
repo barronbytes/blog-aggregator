@@ -23,18 +23,18 @@ export function registerCommand(
  * Runs a command handler from the registry with its arguments.
  * Throws an error if the command does not exist.
  */
-export function runCommand(
+export async function runCommand(
     registry: CommandRegistry,
     cmdName: string,
     ...args: string[]
-): void {
+): Promise<void> {
     const handler = registry[cmdName];
 
     if (!handler) {
         throw new Error(`Error: Failed to provide a "${cmdName}" with a handler function in registry.`);
     }
 
-    handler(cmdName, ...args);
+    await handler(cmdName, ...args);
 }
 
 
@@ -47,7 +47,7 @@ export function runCommand(
 * Login command sets the username in the config JSON file.
 * Throws an error if exactly one argument for a username is not provided.
 */
-export function handlerLogin(cmdName: string, ...args: string[]): void {
+export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void> {
     if (args.length !== 1) {
         throw new Error(`Error: Failed to provide one "${args}" value for a username.`);
     }
