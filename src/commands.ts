@@ -1,5 +1,6 @@
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername } from "./file-handling.js";
+import { createUser, getUserByName } from "./db-users-queries.js";
 
 
 // --------------------
@@ -44,15 +45,61 @@ export async function runCommand(
 
 
 /*
-* Login command sets the username in the config JSON file.
+ * Validates that the command received exactly one argument.
+ * Throws an error if the argument length is not 1.
+*/
+function isArgsOK(cmdName: string, ...args: string[]): void {
+    if (args.length !== 1) {
+        throw new Error(`Error: You must provide exactly one username to ${cmdName}.`);
+    }
+}
+
+
+/*
+* Login command: sets the username in the config JSON file.
 * Throws an error if exactly one argument for a username is not provided.
 */
 export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void> {
-    if (args.length !== 1) {
-        throw new Error(`Error: Failed to provide one "${args}" value for a username.`);
+    isArgsOK(cmdName, ...args);
+
+    // Set username from args
+    const username = args[0];
+
+    // Check to exit program if user never registered
+    const user = await getUserByName(username);
+    if (!user) {
+        throw new Error(`Error: User "${username}" does not exist.`);
     }
 
-    const username = args[0];
+    // Set current user in the config
     updateUsername(username);
-    console.log(`Username has been set to: ${username}`);
+
+    // Success message
+    console.log(`User "${username}" has been set as the current user.`);
+}
+
+
+/**
+ * Register command: sets the username in the config JSON file.
+ * Currently identical to login handler, but separated for clarity.
+ */
+export async function handlerRegister(cmdName: string, ...args: string[]): Promise<void> {
+    isArgsOK(cmdName, ...args);
+
+    // Set username from args
+    const username = args[0];
+
+    // Check to register user if not previously done so
+    let user = await getUserByName(username);
+    if (!user) {
+        user = await createUser(username);
+        console.log(`User "${username}" created.`);
+    }
+
+    // Set current user in the config
+    updateUsername(username);
+
+    // Success messages
+    console.log(`User "${username}" has been registered and set as the current user.`);
+    console.log("New user data: ", user);
 }
