@@ -65,7 +65,7 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
     // Set username from args
     const username = args[0];
 
-    // Check to exit program if user never registered
+    // Exit program if user not registered.
     const user = await getUserByName(username);
     if (!user) {
         throw new Error(`Error: User "${username}" does not exist.`);
@@ -89,17 +89,17 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
     // Set username from args
     const username = args[0];
 
-    // Check to register user if not previously done so
-    let user = await getUserByName(username);
-    if (!user) {
-        user = await createUser(username);
-        console.log(`User "${username}" created.`);
+    // Exit program if user previously registered.
+    const existingUser = await getUserByName(username);
+    if (existingUser) {
+        throw new Error(`Error: User "${username}" already exists.`);
     }
 
-    // Set current user in the config
+    // Create new user and set user in the config
+    const newUser = await createUser(username);
     updateUsername(username);
 
     // Success messages
     console.log(`User "${username}" has been registered and set as the current user.`);
-    console.log("New user data: ", user);
+    console.log("New user data: ", newUser);
 }
