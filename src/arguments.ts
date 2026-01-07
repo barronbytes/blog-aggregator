@@ -8,6 +8,12 @@ import type { CommandRegistry } from "./commands.types.js";
 export function getArguments(): string[] {
     const args = process.argv.slice(2); // slice first 2 user args → skip Node + script path
 
+    // Case where command name is "reset"
+    if (args[0] === "reset") {
+        return args;
+    }
+
+    // Case where command name is not "reset"
     if (args.length < 2) {
         console.error("Error: Must provide command name and at least one argument.");
         console.log("Usage: npm run start -- commandName ...arguments");

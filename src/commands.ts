@@ -1,6 +1,6 @@
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername } from "./file-handling.js";
-import { createUser, getUserByName } from "./db-users-queries.js";
+import { createUser, getUserByName, resetTable } from "./db-users-queries.js";
 
 
 // --------------------
@@ -39,25 +39,34 @@ export async function runCommand(
 }
 
 
-// --------------------
-// COMMANDS
-// --------------------
-
-
 /*
  * Validates that the command received exactly one argument.
  * Throws an error if the argument length is not 1.
 */
 function isArgsOK(cmdName: string, ...args: string[]): void {
+    // Check to ensure user passes "npm run start reset" without args
+    if (cmdName === "reset") {
+        if (args.length !== 0) {
+            throw new Error(`Error: The "reset" command does not take any arguments.`);
+        }
+        return; // Skip further validation
+    }
+
+    // Check to ensure users passes "npm run start cmdName username"
     if (args.length !== 1) {
         throw new Error(`Error: You must provide exactly one username to ${cmdName}.`);
     }
 }
 
 
+// --------------------
+// COMMANDS
+// --------------------
+
+
 /*
 * Login command: sets the username in the config JSON file.
-* Throws an error if exactly one argument for a username is not provided.
+* Throws an error if user is not registered.
 */
 export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void> {
     isArgsOK(cmdName, ...args);
@@ -80,8 +89,8 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
 
 
 /**
- * Register command: sets the username in the config JSON file.
- * Currently identical to login handler, but separated for clarity.
+ * Register command: creates user and sets the username in the config JSON file.
+ * Throws an error if user is already registered.
  */
 export async function handlerRegister(cmdName: string, ...args: string[]): Promise<void> {
     isArgsOK(cmdName, ...args);
@@ -100,6 +109,21 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
     updateUsername(username);
 
     // Success messages
-    console.log(`User "${username}" has been registered and set as the current user.`);
     console.log("New user data: ", newUser);
+    console.log(`User "${username}" has been registered and set as the current user.`);
+}
+
+
+/**
+ * Reset command: clears data in users table.
+ * Throws an error if user sends arguments in CLI command.
+ */
+export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {
+    isArgsOK(cmdName, ...args);
+
+    // Deletes all rows from users table.
+    await resetTable();
+
+    // Success message
+    console.log("Users table reset successfully.");
 }

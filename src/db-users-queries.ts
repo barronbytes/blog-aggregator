@@ -17,5 +17,13 @@ export async function createUser(name: string) {
  */
 export async function getUserByName(username: string) {
   const [result] = await db.select().from(users).where(eq(users.name, username));
-  return result
+  return result;
+}
+
+
+/**
+ * Deletes all rows in the users table.
+ */
+export async function resetTable() {
+  await db.delete(users);
 }

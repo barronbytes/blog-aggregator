@@ -9,6 +9,7 @@ async function main(): Promise<void> {
     const registry: CommandRegistry = {}
     Cmds.registerCommand(registry, "login", Cmds.handlerLogin);
     Cmds.registerCommand(registry, "register", Cmds.handlerRegister);
+    Cmds.registerCommand(registry, "reset", Cmds.handlerReset);
 
     // Get CLI command name and arguments
     const args = getArguments();
