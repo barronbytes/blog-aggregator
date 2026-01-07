@@ -7,8 +7,9 @@ import * as Cmds from "./commands.js";
 async function main(): Promise<void> {
     // Register command
     const registry: CommandRegistry = {}
-    Cmds.registerCommand(registry, "login", Cmds.handlerLogin);
     Cmds.registerCommand(registry, "register", Cmds.handlerRegister);
+    Cmds.registerCommand(registry, "users", Cmds.handlerUsers);
+    Cmds.registerCommand(registry, "login", Cmds.handlerLogin);
     Cmds.registerCommand(registry, "reset", Cmds.handlerReset);
 
     // Get CLI command name and arguments

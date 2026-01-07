@@ -1,6 +1,6 @@
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
-import { updateUsername } from "./file-handling.js";
-import { createUser, getUserByName, resetTable } from "./db-users-queries.js";
+import { updateUsername, readConfig } from "./file-handling.js";
+import { createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
 
 
 // --------------------
@@ -44,8 +44,10 @@ export async function runCommand(
  * Throws an error if the argument length is not 1.
 */
 function isArgsOK(cmdName: string, ...args: string[]): void {
+    const noArgCmds = ["reset", "users"]; // commands that don't take arguments
+
     // Check to ensure user passes "npm run start reset" without args
-    if (cmdName === "reset") {
+    if (noArgCmds.includes(cmdName)) {
         if (args.length !== 0) {
             throw new Error(`Error: The "reset" command does not take any arguments.`);
         }
@@ -64,32 +66,8 @@ function isArgsOK(cmdName: string, ...args: string[]): void {
 // --------------------
 
 
-/*
-* Login command: sets the username in the config JSON file.
-* Throws an error if user is not registered.
-*/
-export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
-    // Set username from args
-    const username = args[0];
-
-    // Exit program if user not registered.
-    const user = await getUserByName(username);
-    if (!user) {
-        throw new Error(`Error: User "${username}" does not exist.`);
-    }
-
-    // Set current user in the config
-    updateUsername(username);
-
-    // Success message
-    console.log(`User "${username}" has been set as the current user.`);
-}
-
-
 /**
- * Register command: creates user and sets the username in the config JSON file.
+ * Register command: Creates user and sets the username in the config JSON file.
  * Throws an error if user is already registered.
  */
 export async function handlerRegister(cmdName: string, ...args: string[]): Promise<void> {
@@ -98,7 +76,7 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
     // Set username from args
     const username = args[0];
 
-    // Exit program if user previously registered.
+    // Exit program if user previously registered
     const existingUser = await getUserByName(username);
     if (existingUser) {
         throw new Error(`Error: User "${username}" already exists.`);
@@ -114,8 +92,54 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
 }
 
 
+/*
+* Login command: Sets the username in the config JSON file.
+* Throws an error if user is not registered.
+*/
+export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void> {
+    isArgsOK(cmdName, ...args);
+
+    // Set username from args
+    const username = args[0];
+
+    // Exit program if user not registered
+    const user = await getUserByName(username);
+    if (!user) {
+        throw new Error(`Error: User "${username}" does not exist.`);
+    }
+
+    // Set current user in the config
+    updateUsername(username);
+
+    // Success message
+    console.log(`User "${username}" has been set as the current user.`);
+}
+
+
 /**
- * Reset command: clears data in users table.
+ * Users command: Selects all users in the users table.
+ * Throws an error if user sends arguments in CLI command.
+ */
+export async function handlerUsers(cmdName: string, ...args: string[]): Promise<void> {
+    isArgsOK(cmdName, ...args);
+
+    // Selects all users from the users table
+    const allUsers = await getUsers();
+
+    // Selects current username
+    const currentUserName = readConfig().currentUserName;
+
+    // Success message
+    const output = allUsers.map(user => {
+        const marker = user.name === currentUserName ? " (current)" : "";
+        return `* ${user.name}${marker}`;
+    }).join("\n");
+    console.log(output);
+}
+
+
+/**
+ * Reset command: Deletes all users in the users table.
  * Throws an error if user sends arguments in CLI command.
  */
 export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {

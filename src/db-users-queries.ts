@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 
 
 /**
- * Inserts a new user into the users table.
+ * CREATE: Inserts a new user into the users table.
  */
 export async function createUser(name: string) {
   const [result] = await db.insert(users).values({ name }).returning();
@@ -13,7 +13,16 @@ export async function createUser(name: string) {
 
 
 /**
- * Selects user by username from the users table.
+ * READ: Selects all users in the users table.
+ */
+export async function getUsers() {
+  const results = await db.select().from(users);
+  return results;
+}
+
+
+/**
+ * READ: Selects user by username from the users table.
  */
 export async function getUserByName(username: string) {
   const [result] = await db.select().from(users).where(eq(users.name, username));
@@ -22,7 +31,7 @@ export async function getUserByName(username: string) {
 
 
 /**
- * Deletes all rows in the users table.
+ * DELETE: Deletes all rows in the users table.
  */
 export async function resetTable() {
   await db.delete(users);
