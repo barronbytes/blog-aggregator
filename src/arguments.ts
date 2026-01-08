@@ -1,4 +1,5 @@
 import type { CommandRegistry } from "./commands.types.js";
+import { NoArgCmds } from "./commands.meta.js";
 
 
 /* 
@@ -7,10 +8,10 @@ import type { CommandRegistry } from "./commands.types.js";
 */
 export function getArguments(): string[] {
     const args = process.argv.slice(2); // slice first 2 user args → skip Node + script path
-    const noArgCmds = ["reset", "users"];
+    const noArgCmds = NoArgCmds;        // Commands that don't take arguments
 
-    // Commands with no arguments
-    if (noArgCmds.includes(args[0])) {
+    // Exit program if CLI command has no arguments
+    if (args.length === 1 && NoArgCmds.includes(args[0])) {
         return args;
     }
 

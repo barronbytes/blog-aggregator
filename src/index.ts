@@ -1,16 +1,21 @@
 import { getArguments, getCmdAndArgs } from "./arguments.js";
 import { readConfig } from "./file-handling.js";
 import type { CommandRegistry } from "./commands.types.js";
+import { COMMANDS, type CommandMeta } from "./commands.meta.js";
 import * as Cmds from "./commands.js";
 
 
+/**
+ * Coordinates app activity
+ */
 async function main(): Promise<void> {
     // Register command
     const registry: CommandRegistry = {}
-    Cmds.registerCommand(registry, "register", Cmds.handlerRegister);
-    Cmds.registerCommand(registry, "users", Cmds.handlerUsers);
-    Cmds.registerCommand(registry, "login", Cmds.handlerLogin);
-    Cmds.registerCommand(registry, "reset", Cmds.handlerReset);
+
+    // Dynamically register all commands from COMMANDS
+    Object.values(COMMANDS).forEach((cmd: CommandMeta) => {
+        Cmds.registerCommand(registry, cmd.name, cmd.handler);
+    });
 
     // Get CLI command name and arguments
     const args = getArguments();

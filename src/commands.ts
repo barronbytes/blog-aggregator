@@ -1,3 +1,4 @@
+import { NoArgCmds } from "./commands.meta.js";
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
@@ -44,7 +45,7 @@ export async function runCommand(
  * Throws an error if the argument length is not 1.
 */
 function isArgsOK(cmdName: string, ...args: string[]): void {
-    const noArgCmds = ["reset", "users"]; // commands that don't take arguments
+    const noArgCmds = NoArgCmds; // Commands that don't take arguments
 
     // Check to ensure user passes "npm run start reset" without args
     if (noArgCmds.includes(cmdName)) {
