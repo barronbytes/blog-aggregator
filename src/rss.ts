@@ -37,7 +37,12 @@ export async function fetchFeed(requestURL: string): Promise<RssZod.RSSFeed> {
             },
         }
 
-        // Return feed with normalized items array
+        // Keep only items that have all required fields
+        normalizedXML.channel.item = normalizedXML.channel.item.filter(
+            item => item.title && item.link && item.description && item.pubDate
+        );
+
+        // Return normalized feed with only valid items
         return normalizedXML;
     }
 
