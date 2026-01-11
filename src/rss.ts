@@ -3,8 +3,6 @@ import * as RssHttp from "./rss.http.js";
 import * as RssZod from "./rss.types.js";
 
 
-
-
 export async function fetchFeed(requestURL: string): Promise<RssZod.RSSFeed> {
     try {
         const response = await fetch(requestURL, RssHttp.settingsGET);
