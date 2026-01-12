@@ -2,6 +2,7 @@ import { NoArgCmds } from "./commands.meta.js";
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
+import { fetchFeed } from "./rss.js";
 
 
 // --------------------
@@ -151,4 +152,18 @@ export async function handlerReset(cmdName: string, ...args: string[]): Promise<
 
     // Success message
     console.log("Users table reset successfully.");
+}
+
+/**
+ * Aggregator command: Returns XML object for RSS feed.
+ * Throws an error HTTP, Fetch, Validation, or Unknown errors.
+ */
+export async function handlerAggregator(cmdName: string, ...args: string[]): Promise<void> {
+    isArgsOK(cmdName, ...args);
+
+    const requestURL = "https://www.wagslane.dev/index.xml";
+    const rssXML = await fetchFeed(requestURL);
+
+    // Success message
+    console.log(JSON.stringify(rssXML, null, 2));
 }

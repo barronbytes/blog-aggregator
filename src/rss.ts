@@ -18,29 +18,31 @@ export async function fetchFeed(requestURL: string): Promise<RssZod.RSSFeed> {
         const parsedXML = RssHttp.parser.parse(xmlString);
         const validatedXML = RssZod.RSSFeedSchema.parse(parsedXML);
 
-        // Ensure channel.item is always an array
-        let itemsArray: RssZod.RSSItem[] = [];              // defaults to empty array
-        if (validatedXML.channel.item) {
-            if (Array.isArray(validatedXML.channel.item)) { // already array => store as array
-                itemsArray = validatedXML.channel.item;
-            } else {                                        // single item => store as array
-                itemsArray = [validatedXML.channel.item];
-            }
+        const channel = validatedXML.rss.channel;
+
+        // Ensure rss.channel.item is always an array
+        let savedItems: RssZod.RSSItem[] = []; // defaults to empty array
+        if (channel.item) {
+            savedItems = Array.isArray(channel.item)
+            ? channel.item : // if array, store as is
+            [channel.item];  // if one item, cast as array
         }
+
+        // Ensure rss.channel.item contains all required fields
+        const filteredItems = savedItems.filter(
+            (item) => item.title && item.link && item.description && item.pubDate
+        );
 
         // Create feed with normalized items array
         const normalizedXML: RssZod.RSSFeed = {
-            ...validatedXML,                // shallow copy
-            channel: {
-                ...validatedXML.channel,    // shallow copy
-                item: itemsArray,           // overwrite validatedXML.channel.item
+            rss: {
+                ...validatedXML.rss,        // shallow copy
+                channel: {
+                    ...channel,             // shallow copy
+                    item: filteredItems,    // overwrite
+                },
             },
         }
-
-        // Keep only items that have all required fields
-        normalizedXML.channel.item = normalizedXML.channel.item.filter(
-            item => item.title && item.link && item.description && item.pubDate
-        );
 
         // Return normalized feed with only valid items
         return normalizedXML;
