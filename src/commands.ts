@@ -2,6 +2,7 @@ import { COMMANDS } from "./commands.meta.js";
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
+import { createFeed } from "./db-feeds-queries.js";
 import { fetchFeed } from "./rss.js";
 
 
@@ -52,7 +53,7 @@ function isArgsOK(cmdName: string, ...args: string[]): void {
     if (!command) throw new Error(`Error: Unregistered command name: ${command}`);
 
     if (command.args !== args.length) {
-        throw new Error(`Error: "${cmdName} expects ${command.args} argument(s), but provided ${args.length}."`);
+        throw new Error(`Error: ${cmdName} expects ${command.args} argument(s), but provided ${args.length}.`);
     }
 }
 
@@ -184,11 +185,11 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
     }
 
     // Create feed linked to user
-    const feed = await createFeed({
+    const feed = await createFeed(
         name,
         url,
-        userId: user.id,
-    });
+        user.id,
+    );
 
     // Success message
     console.log("Feed added successfully:");
