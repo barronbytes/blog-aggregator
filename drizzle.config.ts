@@ -21,7 +21,7 @@ if (!DB_URL) {
  * helper and migration files to the `out` location.
  */
 export default defineConfig({
-  schema: "data/schemas/users-table.schema.ts",
+  schema: ["data/schemas/*.ts"], // wildcard to accept multiple files in directory
   out: "data/generated",
   dialect: "postgresql",
   dbCredentials: {
