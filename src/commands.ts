@@ -1,8 +1,8 @@
 import { COMMANDS } from "./commands.meta.js";
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
-import { createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
-import { createFeed } from "./db-feeds-queries.js";
+import { User, createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
+import { Feed, createFeed } from "./db-feeds-queries.js";
 import { fetchFeed } from "./rss.js";
 
 
@@ -164,7 +164,6 @@ export async function handlerAggregator(cmdName: string, ...args: string[]): Pro
 }
 
 
-
 /**
  * addfeed command: Creates feed record in feeds table.
  * Throws an error if cannot add record.
@@ -193,4 +192,12 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
 
     // Success message
     console.log("Feed added successfully:");
+    printFeed(feed, user);
+}
+
+
+/* Helper function to print user and feed information */
+export function printFeed(feed: Feed, user: User): void {
+    console.log("Feed:", JSON.stringify(feed, null, 2));
+    console.log("User:", JSON.stringify(user, null, 2));
 }
