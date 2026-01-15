@@ -17,7 +17,7 @@ export function getArguments(): string[] {
 
     // Commands with arguments
     if (args.length < 2) {
-        console.error("Error: Must provide command name and at least one argument.");
+        console.error("Error: Must provide command name and valid number of arguments.");
         console.log("Usage: npm run start -- commandName ...arguments");
         process.exit(1);
     }

@@ -1,4 +1,4 @@
-import { NoArgCmds } from "./commands.meta.js";
+import { COMMANDS } from "./commands.meta.js";
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
@@ -42,23 +42,17 @@ export async function runCommand(
 
 
 /*
- * Validates that the command received exactly one argument.
- * Throws an error if the argument length is not 1.
+ * Validates that the command recieved has the expected number of arguments.
+ * Throws an error if the wrong number of command arguments are passed.
 */
 function isArgsOK(cmdName: string, ...args: string[]): void {
-    const noArgCmds = NoArgCmds; // Commands that don't take arguments
+    const command = Object.values(COMMANDS)
+        .find((cmd) => cmd.name === cmdName);
 
-    // Check to ensure user passes "npm run start reset" without args
-    if (noArgCmds.includes(cmdName)) {
-        if (args.length !== 0) {
-            throw new Error(`Error: The "reset" command does not take any arguments.`);
-        }
-        return; // Skip further validation
-    }
+    if (!command) throw new Error(`Error: Unregistered command name: ${command}`);
 
-    // Check to ensure users passes "npm run start cmdName username"
-    if (args.length !== 1) {
-        throw new Error(`Error: You must provide exactly one username to ${cmdName}.`);
+    if (command.args !== args.length) {
+        throw new Error(`Error: "${cmdName} expects ${command.args} argument(s), but provided ${args.length}."`);
     }
 }
 
@@ -166,4 +160,36 @@ export async function handlerAggregator(cmdName: string, ...args: string[]): Pro
 
     // Success message
     console.log(JSON.stringify(rssXML, null, 2));
+}
+
+
+
+/**
+ * addfeed command: Creates feed record in feeds table.
+ * Throws an error if cannot add record.
+ */
+export async function handlerAddFeed(cmdName: string, ...args: string[]): Promise<void> {
+    isArgsOK(cmdName, ...args);
+
+    // Get table record values to pass
+    const [name, url] = args;
+
+    // Get current user from config
+    const username = readConfig().currentUserName;
+
+    // Exit program if user not registered
+    const user = await getUserByName(username);
+    if (!user) {
+        throw new Error(`Error: User "${username}" does not exist.`);
+    }
+
+    // Create feed linked to user
+    const feed = await createFeed({
+        name,
+        url,
+        userId: user.id,
+    });
+
+    // Success message
+    console.log("Feed added successfully:");
 }
