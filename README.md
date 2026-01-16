@@ -103,6 +103,8 @@ As stated, each command must be precedded by `npm run dev` in the terminal. This
 
 ### 5. High Level Design
 
+...
+
 ## Credits and Contributing
 
 [Boot.dev](https://www.boot.dev/) provided the project requirements and guidance to complete this project. Contributions are welcome! Feel free to report any problems.
