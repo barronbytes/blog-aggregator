@@ -22,3 +22,10 @@ export async function createFeed(name: string, url: string, userId: string) {
     .returning();
   return result;
 }
+
+
+/* READ: Selects all feeds from the feeds table. */
+export async function getFeeds() {
+  const results = await db.select().from(feeds);
+  return results;
+}

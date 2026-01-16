@@ -1,8 +1,8 @@
 import { COMMANDS } from "./commands.meta.js";
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
-import { User, createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
-import { Feed, createFeed } from "./db-feeds-queries.js";
+import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
+import { Feed, createFeed, getFeeds } from "./db-feeds-queries.js";
 import { fetchFeed } from "./rss.js";
 
 
@@ -136,7 +136,7 @@ export async function handlerUsers(cmdName: string, ...args: string[]): Promise<
 
 
 /**
- * Reset command: Deletes all users in the users table.
+ * Reset command: Deletes all users from the users table.
  * Throws an error if user sends arguments in CLI command.
  */
 export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {
@@ -161,6 +161,28 @@ export async function handlerAggregator(cmdName: string, ...args: string[]): Pro
 
     // Success message
     console.log(JSON.stringify(rssXML, null, 2));
+}
+
+
+/**
+ * Feeds command: Selects all feeds from the feeds table.
+ * Throws an error if user sends arguments in CLI command.
+ */
+export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<void> {
+    isArgsOK(cmdName, ...args);
+
+    // Selects all feeds from the feeds table
+    const allFeeds = await getFeeds();
+    const output: string[] = [];
+
+    for (const feed of allFeeds) {
+        const user = await getUserByID(feed.userId);
+        const username = user ? user.name : "(unknown)";
+        output.push(`* Feed name: ${feed.name}, Feed url: ${feed.url}, User: ${username}`);
+    }
+
+    // Success message
+    console.log(output.join("\n"));
 }
 
 

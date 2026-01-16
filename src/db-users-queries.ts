@@ -23,7 +23,7 @@ export async function createUser(name: string) {
 }
 
 
-/* READ: Selects all users in the users table. */
+/* READ: Selects all users from the users table. */
 export async function getUsers() {
   const results = await db.select().from(users);
   return results;
@@ -33,6 +33,13 @@ export async function getUsers() {
 /* READ: Selects user by username from the users table. */
 export async function getUserByName(username: string) {
   const [result] = await db.select().from(users).where(eq(users.name, username));
+  return result;
+}
+
+
+/* READ: Selects user by ID from the users table. */
+export async function getUserByID(userID: string) {
+  const [result] = await db.select().from(users).where(eq(users.id, userID));
   return result;
 }
 

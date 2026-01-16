@@ -13,7 +13,8 @@ export const COMMANDS = {
   REGISTER: { name: "register", args: 1, handler: Cmds.handlerRegister },
   LOGIN: { name: "login", args: 1, handler: Cmds.handlerLogin },
   AGGREGATOR: { name: "agg", args: 0, handler: Cmds.handlerAggregator },
-  ADDFEED: { name: "addfeed", args: 2, handler: Cmds.handlerAddFeed }
+  ADDFEED: { name: "addfeed", args: 2, handler: Cmds.handlerAddFeed },
+  FEEDS: { name: "feeds", args: 0, handler: Cmds.handlerFeeds }
 } as const;
 
 
