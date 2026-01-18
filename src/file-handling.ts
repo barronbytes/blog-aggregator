@@ -1,3 +1,8 @@
+/**
+ * Reference material:
+ * File handling: https://medium.com/devcodesights/step-by-step-file-handling-in-node-js-for-beginners-773cda12a702
+ * JSON methods: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON
+ */
 import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";
