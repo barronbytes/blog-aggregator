@@ -9,7 +9,7 @@ import { COMMANDS, type CommandMeta } from "./commands.meta.js";
 export function getArguments(): string[] {
     const args = process.argv.slice(2); // slice first 2 user args → skip Node + script path
 
-    // Failure. User did not pass a command name.
+    // Failure: User did not pass a command name.
     if (args.length === 0) {
         console.error("Error: Did not provide command name.");
         console.log("Usage: npm run start -- <commandName> [...arguments]");
@@ -30,7 +30,7 @@ export function getArguments(): string[] {
         process.exit(1);
     }
 
-    // Failure. User passed command name with wrong number of arguments.
+    // Failure: User passed command name with wrong number of arguments.
     const inputArgsCount = args.length - 1;
     if (inputArgsCount !== cmdMeta.args) {
         console.error(`Error: Command ${cmdName} expects ${cmdMeta.args} arguments. You provided ${inputArgsCount} arguments.`);
@@ -50,7 +50,7 @@ export function getCmdAndArgs(registry: CommandRegistry, args: string[]): [strin
     const cmdName = args[0];
     const cmdArgs = args.slice(1);
 
-    // Check that the command exists in the registry
+    // Failure: User passed command name not found in registry.
     if (!registry[cmdName]) {
         console.error(`Error: Unknown command "${cmdName}".`);
         console.log("Available commands:", Object.keys(registry).join(", "));
