@@ -61,13 +61,13 @@ Clone relevant files. Then, do the following:
 
 **Run the Program**
 
-> `npm run dev COMMAND [ARGUMENTS]`
+> `npm run start COMMAND [ARGUMENTS]`
 
 This program has numerous commands that each enforce passing the correct number of arguments. Error messages are printed out with usage advice whenever this contract is broken.
 
 **Program Commands**
 
-As stated, each command must be precedded by `npm run dev` in the terminal. This list mentions the `COMMAND [ARGUMENTS]` portion of commands that must be passed.
+As stated, each command must be precedded by `npm run start` in the terminal. This list mentions the `COMMAND [ARGUMENTS]` portion of commands that must be passed.
 
 > `reset`: No arguments. Clears all records from `users` table.
 > `users`: No arguments. Returns all users from `users` table.
