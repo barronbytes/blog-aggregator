@@ -65,7 +65,7 @@ Clone relevant files. Then, do the following:
 
 This program has numerous commands that each enforce passing the correct number of arguments. Error messages are printed out with usage advice whenever this contract is broken.
 
-At the moment, the program requires you have the following file path saved: `~/gatorconfig.json`. This is a configuration file for the database. A sample structure for the file is found in the `./data/configs` directory in this repository.
+At the moment, the program requires you have the following file path saved: `~/gatorconfig.json`. This is a configuration file for the database. A sample structure for the file is found in the `./data/configs` directory in this repository. Additionally, for the program to run you should open the `.env` file and save the `DB_CONFIG_DIR=/home/YOUR_USERNAME` variable to include your username instead of mine. This program will later be updated to avoid these manual adjustments. 
 
 **Program Commands**
 
