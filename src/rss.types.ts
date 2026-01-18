@@ -1,3 +1,9 @@
+/**
+ * Reference material:
+ * Basics: https://zod.dev/basics
+ * Defining schemas: https://zod.dev/api
+ * Custom Error messages: https://zod.dev/error-customization
+ */
 import { z } from "zod";
 
 
@@ -5,7 +11,7 @@ import { z } from "zod";
 
 
 /* Defines schema for one <item> element inside <channel>. */
-export const RSSItemSchema = z.object({
+export const ItemSchema = z.object({
     title: z.string().min(1, "Item must have a title"),
     link: z.url("Item link must be a valid URL"),
     description: z.string().min(1, "Item must have a description"),
@@ -14,7 +20,7 @@ export const RSSItemSchema = z.object({
 
 
 /* Validation type for RSSItem. */
-export type RSSItem = z.infer<typeof RSSItemSchema>;
+export type RSSItem = z.infer<typeof ItemSchema>;
 
 
 /* ---------- RAW CHANNEL ---------- */
@@ -28,8 +34,8 @@ export const ChannelSchema = z.object({
     link: z.url("Channel link must be a valid URL"),
     description: z.string().min(1, "Channel must have a description"),
     item: z.union([
-        RSSItemSchema,
-        z.array(RSSItemSchema),
+        ItemSchema,
+        z.array(ItemSchema),
     ]).optional(),
 });
 
@@ -42,7 +48,7 @@ export type RSSChannel = z.infer<typeof ChannelSchema>;
 
 
 /* Defines schema for top-level <rss> element. */
-export const RSSFeedSchema = z.object({
+export const RawFeedSchema = z.object({
     rss: z.object({
         channel: ChannelSchema,
     }),
@@ -50,7 +56,7 @@ export const RSSFeedSchema = z.object({
 
 
 /* Validation type for entire raw rss feed. */
-export type RawRSSFeed = z.infer<typeof RSSFeedSchema>;
+export type RSSRawFeed = z.infer<typeof RawFeedSchema>;
 
 
 /* ---------- NORMALIZED FEED ---------- */
@@ -59,17 +65,17 @@ export type RawRSSFeed = z.infer<typeof RSSFeedSchema>;
 /* Defines schema for normalized <channel> element. 
  * <item> gauranteed to be an array.
  */
-export const NormalizedRSSFeedSchema = z.object({
+export const NormalizedFeedSchema = z.object({
   rss: z.object({
     channel: z.object({
       title: z.string(),
-      link: z.string().url(),
+      link: z.url(),
       description: z.string(),
-      item: z.array(RSSItemSchema),
+      item: z.array(ItemSchema),
     }),
   }),
 });
 
 
 /* Validation type for entire normalized rss feed. */
-export type RSSFeed = z.infer<typeof NormalizedRSSFeedSchema>;
+export type RSSFeed = z.infer<typeof NormalizedFeedSchema>;
