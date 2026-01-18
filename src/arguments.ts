@@ -1,5 +1,5 @@
 import type { CommandRegistry } from "./commands.types.js";
-import { NoArgCmds } from "./commands.meta.js";
+import { COMMANDS, type CommandMeta } from "./commands.meta.js";
 
 
 /* 
@@ -8,17 +8,33 @@ import { NoArgCmds } from "./commands.meta.js";
 */
 export function getArguments(): string[] {
     const args = process.argv.slice(2); // slice first 2 user args → skip Node + script path
-    const noArgCmds = NoArgCmds;        // Commands that don't take arguments
 
-    // Exit program if CLI command has no arguments
-    if (args.length === 1 && NoArgCmds.includes(args[0])) {
-        return args;
+    // Failure. User did not pass a command name.
+    if (args.length === 0) {
+        console.error("Error: Did not provide command name.");
+        console.log("Usage: npm run start -- <commandName> [...arguments]");
+        process.exit(1);
     }
 
-    // Commands with arguments
-    if (args.length < 2) {
-        console.error("Error: Must provide command name and valid number of arguments.");
-        console.log("Usage: npm run start -- commandName ...arguments");
+    // Failure: User passed unknown command name.
+    const cmdName = args[0];
+    const cmdMeta = Object.values(COMMANDS).find((cmd: CommandMeta) => cmd.name === cmdName);
+    if (!cmdMeta) {
+        console.error(`Error: Command ${cmdName} is not registered to use.`);
+        console.log("Available Commands:");
+        Object.values(COMMANDS)
+            .forEach( cmd => {
+                console.log(`* npm run start ${cmd.name} [${cmd.args} arguments]`);
+            }
+        );
+        process.exit(1);
+    }
+
+    // Failure. User passed command name with wrong number of arguments.
+    const inputArgsCount = args.length - 1;
+    if (inputArgsCount !== cmdMeta.args) {
+        console.error(`Error: Command ${cmdName} expects ${cmdMeta.args} arguments. You provided ${inputArgsCount} arguments.`);
+        console.log("Usage: npm run start -- <commandName> [...arguments]");
         process.exit(1);
     }
 
