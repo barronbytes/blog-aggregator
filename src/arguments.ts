@@ -1,4 +1,3 @@
-import type { CommandRegistry } from "./commands.types.js";
 import { COMMANDS, type CommandMeta } from "./commands.meta.js";
 
 
@@ -41,21 +40,3 @@ export function getArguments(): string[] {
     return args;
 }
 
-
-/*
-* Returns command name and argument from CLI arguments.
-* Exits with code 1 if both not provided.
-*/
-export function getCmdAndArgs(registry: CommandRegistry, args: string[]): [string, string[]] {
-    const cmdName = args[0];
-    const cmdArgs = args.slice(1);
-
-    // Failure: User passed command name not found in registry.
-    if (!registry[cmdName]) {
-        console.error(`Error: Unknown command "${cmdName}".`);
-        console.log("Available commands:", Object.keys(registry).join(", "));
-        process.exit(1);
-    }
-
-    return [cmdName, cmdArgs];
-}

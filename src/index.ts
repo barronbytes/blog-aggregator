@@ -1,4 +1,4 @@
-import { getArguments, getCmdAndArgs } from "./arguments.js";
+import { getArguments } from "./arguments.js";
 import { readConfig } from "./file-handling.js";
 import type { CommandRegistry } from "./commands.types.js";
 import { COMMANDS, type CommandMeta } from "./commands.meta.js";
@@ -19,7 +19,8 @@ async function main(): Promise<void> {
 
     // Get CLI command name and arguments
     const args = getArguments();
-    const [cmdName, cmdArgs] = getCmdAndArgs(registry, args);
+    const cmdName = args[0];
+    const cmdArgs = args.slice(1);
 
     // Runs a command handler from registry. Throws error if not found.
     await Cmds.runCommand(registry, cmdName, ...cmdArgs);
