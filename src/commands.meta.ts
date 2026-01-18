@@ -30,12 +30,3 @@ export type CommandMeta = typeof COMMANDS[keyof typeof COMMANDS];
  * - "reset" | "users" | "register" | "login"
  */
 export type CommandName = CommandMeta["name"];
-
-
-/**
- * Dynamically generate array of command names with no arguments (args: 0):
- * - ["reset", "users"]
- */
-export const NoArgCmds: string[] = Object.values(COMMANDS)
-  .filter(cmd => cmd.args === 0)
-  .map(cmd => cmd.name);
