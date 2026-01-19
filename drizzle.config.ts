@@ -1,3 +1,7 @@
+/**
+ * Reference material:
+ * Medium article (config file): https://javascript.plainenglish.io/drizzle-orm-nestjs-database-migration-set-up-e9f1dfd71ed6
+ */
 import dotenv from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
@@ -21,10 +25,10 @@ if (!DB_URL) {
  * helper and migration files to the `out` location.
  */
 export default defineConfig({
-  schema: ["data/schemas/*.ts"], // wildcard to accept multiple files in directory
-  out: "data/generated",
-  dialect: "postgresql",
-  dbCredentials: {
+  schema: ["data/schemas/*.ts"],  // Path to schema files, wildcard to catch all files
+  out: "data/generated",          // Path to migration output files
+  dialect: "postgresql",          // Database type
+  dbCredentials: {                // Database connection url
     url: DB_URL,
   },
 });
