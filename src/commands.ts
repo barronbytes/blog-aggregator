@@ -1,4 +1,3 @@
-import { COMMANDS } from "./commands.meta.js";
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
