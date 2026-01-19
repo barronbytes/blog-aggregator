@@ -1,3 +1,7 @@
+/**
+ * Reference material:
+ * N+1 Problem: https://medium.com/@bvsahane89/understanding-the-n-1-problem-in-rest-api-design-causes-consequences-and-solutions-28d9d3d47860
+ */
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
@@ -149,6 +153,7 @@ export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<
     const allFeeds = await getFeeds();
     const output: string[] = [];
 
+    // FLAG: N+1 database query problem
     for (const feed of allFeeds) {
         const user = await getUserByID(feed.userId);
         const username = user ? user.name : "(unknown)";
