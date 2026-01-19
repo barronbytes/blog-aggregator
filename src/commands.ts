@@ -42,22 +42,6 @@ export async function runCommand(
 }
 
 
-/*
- * Validates that the command recieved has the expected number of arguments.
- * Throws an error if the wrong number of command arguments are passed.
-*/
-function isArgsOK(cmdName: string, ...args: string[]): void {
-    const command = Object.values(COMMANDS)
-        .find((cmd) => cmd.name === cmdName);
-
-    if (!command) throw new Error(`Error: Unregistered command name: ${command}`);
-
-    if (command.args !== args.length) {
-        throw new Error(`Error: ${cmdName} expects ${command.args} argument(s), but provided ${args.length}.`);
-    }
-}
-
-
 // --------------------
 // COMMANDS
 // --------------------
@@ -68,8 +52,6 @@ function isArgsOK(cmdName: string, ...args: string[]): void {
  * Throws an error if user is already registered.
  */
 export async function handlerRegister(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
     // Set username from args
     const username = args[0];
 
@@ -94,8 +76,6 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
 * Throws an error if user is not registered.
 */
 export async function handlerLogin(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
     // Set username from args
     const username = args[0];
 
@@ -115,13 +95,16 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
 
 /**
  * Users command: Selects all users in the users table.
- * Throws an error if user sends arguments in CLI command.
+ * Throws an error if no users in users table.
  */
 export async function handlerUsers(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
     // Selects all users from the users table
     const allUsers = await getUsers();
+
+    // Exit program if no users
+    if (allUsers.length === 0) {
+        throw new Error("Error: No users.");
+    }
 
     // Selects current username
     const currentUserName = readConfig().currentUserName;
@@ -137,11 +120,8 @@ export async function handlerUsers(cmdName: string, ...args: string[]): Promise<
 
 /**
  * Reset command: Deletes all users from the users table.
- * Throws an error if user sends arguments in CLI command.
  */
 export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
     // Deletes all rows from users table.
     await resetTable();
 
@@ -151,11 +131,9 @@ export async function handlerReset(cmdName: string, ...args: string[]): Promise<
 
 /**
  * Aggregator command: Returns XML object for RSS feed.
- * Throws an error HTTP, Fetch, Validation, or Unknown errors.
+ * fetchFeed() handles HTTP, Fetch, Validation, or Unknown errors.
  */
 export async function handlerAggregator(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
     const requestURL = "https://www.wagslane.dev/index.xml";
     const rssXML = await fetchFeed(requestURL);
 
@@ -166,11 +144,8 @@ export async function handlerAggregator(cmdName: string, ...args: string[]): Pro
 
 /**
  * Feeds command: Selects all feeds from the feeds table.
- * Throws an error if user sends arguments in CLI command.
  */
 export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
     // Selects all feeds from the feeds table
     const allFeeds = await getFeeds();
     const output: string[] = [];
@@ -191,8 +166,6 @@ export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<
  * Throws an error if cannot add record.
  */
 export async function handlerAddFeed(cmdName: string, ...args: string[]): Promise<void> {
-    isArgsOK(cmdName, ...args);
-
     // Get table record values to pass
     const [name, url] = args;
 
