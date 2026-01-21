@@ -2,7 +2,9 @@
  * Reference material:
  * Data types: https://orm.drizzle.team/docs/column-types/pg
  * $onUpdate: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v0305#onupdate-functionality-for-postgresql-mysql-and-sqlite
- */
+ * Generate migration: npx drizzle-kit generate
+ * Apply migration: npx drizzle-kit migrate 
+*/
 import { pgTable, uuid, timestamp, text } from "drizzle-orm/pg-core";
 
 
