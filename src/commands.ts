@@ -7,7 +7,7 @@ import { updateUsername, readConfig } from "./file-handling.js";
 import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
 import { Feed, createFeed, getFeeds, getFeedByUrl } from "./db-feeds-queries.js";
 import { fetchFeed } from "./rss.js";
-import { createFeedFollow } from "./db-feeds-follows-queries.js";
+import { createFeedFollow, getFeedFollow } from "./db-feeds-follows-queries.js";
 
 
 // --------------------
@@ -217,6 +217,13 @@ export async function handlerFollow(cmdName: string, ...args: string[]): Promise
     const user = await getUserByName(userName) as User;
     if (!feed) {
         throw new Error(`Error: Feed "${feedUrl}" does not exist.`);
+    }
+
+    // Exit program if entry with feed.id and user.id already exists in feeds_follows table
+    const existsFeedFollow = await getFeedFollow(feed.id, user.id);
+    if (existsFeedFollow) {
+        console.log(`User "${user.name}" already follows "${feed.name}".`);
+        return;
     }
 
     // Create feed linked to user

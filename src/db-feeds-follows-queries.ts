@@ -8,6 +8,7 @@
  */
 import { db } from "./db-client.js";
 import { FeedsFollows } from "data/schemas/feeds-follows-table.schema.js";
+import { and, eq } from "drizzle-orm";
 
 
 // --------------------
@@ -29,4 +30,18 @@ export async function createFeedFollow(feedId: string, userId: string): Promise<
     .values({ feedId, userId })
     .returning();
   return result;
+}
+
+
+/* READ: Returns entry for feed.id and user.id from feeds_follows table. */
+export async function getFeedFollow(feedId: string, userId: string): Promise<FeedFollow | undefined> {
+    const result = await db
+        .select()
+        .from(FeedsFollows)
+        .where(and(
+            eq(FeedsFollows.feedId, feedId),
+            eq(FeedsFollows.userId, userId),
+        ))
+        .limit(1);
+    return result[0];
 }
