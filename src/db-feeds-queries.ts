@@ -3,9 +3,12 @@
  * Medium.com ($inferSelect): https://medium.com/codex/setting-up-drizzle-postgres-with-trpc-and-next-js-app-15fd8af68485
  * INSERT: https://orm.drizzle.team/docs/insert
  * SELECT: https://orm.drizzle.team/docs/select
+ * UPDATE: https://orm.drizzle.team/docs/update
+ * DELETE: https://orm.drizzle.team/docs/delete
  */
 import { db } from "./db-client.js";
 import { feeds } from "../data/schemas/feeds-table.schema.js"; 
+import { eq } from "drizzle-orm";
 
 
 // --------------------
@@ -34,4 +37,11 @@ export async function createFeed(name: string, url: string, userId: string): Pro
 export async function getFeeds(): Promise<Feed[]> {
   const results = await db.select().from(feeds);
   return results;
+}
+
+
+/* READ: Selects feed by name from the feeds table. */
+export async function getFeedByUrl(feedUrl: string): Promise<Feed | undefined> {
+  const [result] = await db.select().from(feeds).where(eq(feeds.url, feedUrl));
+  return result;
 }

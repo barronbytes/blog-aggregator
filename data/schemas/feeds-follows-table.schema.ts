@@ -14,7 +14,7 @@ import { feeds } from "./feeds-table.schema";
 /*
 * Join table: many-to-many relationship
 */
-export const feedsFollow = pgTable(
+export const FeedsFollows = pgTable(
   "feeds_follows",
   {
     createdAt: timestamp("created_at").notNull().defaultNow(),

@@ -5,8 +5,9 @@
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
-import { Feed, createFeed, getFeeds } from "./db-feeds-queries.js";
+import { Feed, createFeed, getFeeds, getFeedByUrl } from "./db-feeds-queries.js";
 import { fetchFeed } from "./rss.js";
+import { createFeedFollow } from "./db-feeds-follows-queries.js";
 
 
 // --------------------
@@ -199,4 +200,32 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
 export function printFeed(feed: Feed, user: User): void {
     console.log("Feed:", JSON.stringify(feed, null, 2));
     console.log("User:", JSON.stringify(user, null, 2));
+}
+
+
+/**
+ * follow command: Creates joint table record in feeds_follows table.
+ * Throws an error if cannot add record.
+ */
+export async function handlerFollow(cmdName: string, ...args: string[]): Promise<void> {
+    // Get feed and user name from command-line input and config file, respectively
+    const feedUrl = args[0];
+    const userName = readConfig().currentUserName;
+
+    // Exit program if feed not registered
+    const feed = await getFeedByUrl(feedUrl);
+    const user = await getUserByName(userName) as User;
+    if (!feed) {
+        throw new Error(`Error: Feed "${feedUrl}" does not exist.`);
+    }
+
+    // Create feed linked to user
+    const feedFollow = await createFeedFollow(
+        feed.id,
+        user.id,
+    );
+
+    // Success message
+    console.log("User followed feed successfully:");
+    console.log(`Feed: ${feed.name}, User: ${user.name}`);
 }
