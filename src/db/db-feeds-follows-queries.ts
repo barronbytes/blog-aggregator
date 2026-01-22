@@ -54,6 +54,5 @@ export async function getFollowedFeedIds(userId: string): Promise<string[]> {
     .select()
     .from(FeedsFollows)
     .where(eq(FeedsFollows.userId, userId));
-
   return result.map(row => row.feedId);
 }
