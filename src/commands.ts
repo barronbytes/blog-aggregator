@@ -7,6 +7,7 @@ import { updateUsername, readConfig } from "./file-handling.js";
 import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
 import { Feed, createFeed, getFeeds, getFeedByUrl, getFeedNameById } from "./db-feeds-queries.js";
 import { createFeedFollow, getFeedFollow, getFollowedFeedIds } from "./db-feeds-follows-queries.js";
+import { getCurrentUser } from "./commands-helpers.js";
 import { fetchFeed } from "./rss.js";
 
 
@@ -174,14 +175,8 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
     // Get table record values to pass
     const [name, url] = args;
 
-    // Get current user from config
-    const username = readConfig().currentUserName;
-
     // Exit program if user not registered
-    const user = await getUserByName(username);
-    if (!user) {
-        throw new Error(`Error: User "${username}" does not exist.`);
-    }
+    const user = await getCurrentUser();
 
     // Create feed linked to user
     const feed = await createFeed(
@@ -218,16 +213,11 @@ export async function handlerFollow(cmdName: string, ...args: string[]): Promise
     const feedUrl = args[0];
     const userName = readConfig().currentUserName;
 
-    // Exit program if feed not registered
+    // Exit program if user or feed not registered
+    const user = await getCurrentUser();
     const feed = await getFeedByUrl(feedUrl);
     if (!feed) {
         throw new Error(`Error: Feed "${feedUrl}" does not exist.`);
-    }
-
-    // Exit program if user not registered
-    const user = await getUserByName(userName);
-    if (!user) {
-        throw new Error(`Error: User "${userName}" does not exist.`);
     }
 
     // Exit program if entry with feed.id and user.id already exists in feeds_follows table
@@ -258,11 +248,7 @@ export async function handlerFollowing(cmdName: string, ...args: string[]): Prom
     const userName = readConfig().currentUserName;
 
     // Exit program if user not registered
-    const user = await getUserByName(userName);
-    if (!user) {
-        throw new Error(`Error: User "${userName}" does not exist.`);
-    }
-
+    const user = await getCurrentUser();
 
     // Get feed IDs user follows
     const feedIds = await getFollowedFeedIds(user.id);
