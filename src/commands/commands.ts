@@ -3,7 +3,7 @@
  * N+1 Problem: https://medium.com/@bvsahane89/understanding-the-n-1-problem-in-rest-api-design-causes-consequences-and-solutions-28d9d3d47860
  */
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
-import { fetchFeed } from "../rss.js";
+import { fetchFeed } from "../api/rss.js";
 
 
 // --------------------
@@ -43,7 +43,7 @@ export async function runCommand(
 
 
 // --------------------
-// COMMANDS
+// RSS API
 // --------------------
 
 
