@@ -7,7 +7,7 @@ import { updateUsername, readConfig } from "./file-handling.js";
 import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
 import { Feed, createFeed, getFeeds, getFeedByUrl, getFeedNameById } from "./db-feeds-queries.js";
 import { createFeedFollow, getFeedFollow, getFollowedFeedIds } from "./db-feeds-follows-queries.js";
-import { getCurrentUser } from "./commands-helpers.js";
+import { getCurrentUser, printFeed } from "./commands-helpers.js";
 import { fetchFeed } from "./rss.js";
 
 
@@ -194,13 +194,6 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
     // Success message
     console.log("Feed added successfully:");
     printFeed(feed, user);
-}
-
-
-/* Helper function to print user and feed information */
-export function printFeed(feed: Feed, user: User): void {
-    console.log("Feed:", JSON.stringify(feed, null, 2));
-    console.log("User:", JSON.stringify(user, null, 2));
 }
 
 
