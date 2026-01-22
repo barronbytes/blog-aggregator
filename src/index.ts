@@ -1,8 +1,8 @@
 import { getArguments } from "./arguments.js";
 import { readConfig } from "./file-handling.js";
-import type { CommandRegistry } from "./commands.types.js";
-import { COMMANDS, type CommandMeta } from "./commands.meta.js";
-import * as Cmds from "./commands.js";
+import type { CommandRegistry } from "./commands/commands.types.js";
+import { COMMANDS, type CommandMeta } from "./commands/commands.meta.js";
+import * as Cmds from "./commands/commands.js";
 
 
 /**

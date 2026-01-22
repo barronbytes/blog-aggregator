@@ -1,6 +1,6 @@
-import { readConfig } from "./file-handling.js";
-import { User, getUserByName } from "./db-users-queries.js";
-import { Feed } from "./db-feeds-queries.js";
+import { readConfig } from "../file-handling.js";
+import { User, getUserByName } from "../db-users-queries.js";
+import { Feed } from "../db-feeds-queries.js";
 
 
 /* Logic to ensure a user exists.

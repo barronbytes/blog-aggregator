@@ -1,6 +1,6 @@
-import { createFeed, getFeeds } from "./db-feeds-queries.js";
-import { createFeedFollow } from "./db-feeds-follows-queries.js";
-import { getUserByID } from "./db-users-queries.js";
+import { createFeed, getFeeds } from "../db-feeds-queries.js";
+import { createFeedFollow } from "../db-feeds-follows-queries.js";
+import { getUserByID } from "../db-users-queries.js";
 import { getCurrentUser, printFeed } from "./commands-helpers.js";
 
 

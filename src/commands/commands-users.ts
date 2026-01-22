@@ -1,5 +1,5 @@
-import { updateUsername, readConfig } from "./file-handling.js";
-import { createUser, getUsers, getUserByName, resetTable } from "./db-users-queries.js";
+import { updateUsername, readConfig } from "../file-handling.js";
+import { createUser, getUsers, getUserByName, resetTable } from "../db-users-queries.js";
 
 
 /**

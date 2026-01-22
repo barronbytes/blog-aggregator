@@ -1,4 +1,4 @@
-import { COMMANDS, type CommandMeta } from "./commands.meta.js";
+import { COMMANDS, type CommandMeta } from "./commands/commands.meta.js";
 
 
 /* 
