@@ -7,9 +7,9 @@
  * DELETE: https://orm.drizzle.team/docs/delete
  * Filters: https://orm.drizzle.team/docs/operators
  */
+import { eq } from "drizzle-orm";
 import { db } from "./db-client.js";
 import { users } from "../data/schemas/users-table.schema.js";
-import { eq } from "drizzle-orm";
 
 
 // --------------------
@@ -27,33 +27,45 @@ export type User = typeof users.$inferSelect;
 
 /* CREATE: Inserts a new user into the users table. */
 export async function createUser(name: string): Promise<User> {
-  const [result] = await db.insert(users).values({ name }).returning();
+  const [result] = await db
+    .insert(users)
+    .values({ name })
+    .returning();
   return result;
 }
 
 
 /* READ: Selects all users from the users table. */
 export async function getUsers(): Promise<User[]> {
-  const results = await db.select().from(users);
+  const results = await db
+    .select()
+    .from(users);
   return results;
 }
 
 
 /* READ: Selects user by username from the users table. */
 export async function getUserByName(username: string): Promise<User | undefined> {
-  const [result] = await db.select().from(users).where(eq(users.name, username));
+  const [result] = await db
+    .select()
+    .from(users)
+    .where(eq(users.name, username));
   return result;
 }
 
 
 /* READ: Selects user by ID from the users table. */
 export async function getUserByID(userID: string): Promise<User | undefined> {
-  const [result] = await db.select().from(users).where(eq(users.id, userID));
+  const [result] = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, userID));
   return result;
 }
 
 
 /* DELETE: Deletes all rows in the users table. */
 export async function resetTable(): Promise<void> {
-  await db.delete(users);
+  await db
+    .delete(users);
 }

@@ -6,9 +6,9 @@
  * UPDATE: https://orm.drizzle.team/docs/update
  * DELETE: https://orm.drizzle.team/docs/delete
  */
+import { eq } from "drizzle-orm";
 import { db } from "./db-client.js";
 import { feeds } from "../data/schemas/feeds-table.schema.js"; 
-import { eq } from "drizzle-orm";
 
 
 // --------------------
@@ -26,7 +26,8 @@ export type Feed = typeof feeds.$inferSelect;
 
 /* CREATE: Inserts a new feed into the feeds table. */
 export async function createFeed(name: string, url: string, userId: string): Promise<Feed> {
-  const [result] = await db.insert(feeds)
+  const [result] = await db
+    .insert(feeds)
     .values({ name, url, userId })
     .returning();
   return result;
@@ -35,13 +36,28 @@ export async function createFeed(name: string, url: string, userId: string): Pro
 
 /* READ: Selects all feeds from the feeds table. */
 export async function getFeeds(): Promise<Feed[]> {
-  const results = await db.select().from(feeds);
+  const results = await db
+    .select()
+    .from(feeds);
   return results;
 }
 
 
 /* READ: Selects feed by name from the feeds table. */
 export async function getFeedByUrl(feedUrl: string): Promise<Feed | undefined> {
-  const [result] = await db.select().from(feeds).where(eq(feeds.url, feedUrl));
+  const [result] = await db
+    .select()
+    .from(feeds)
+    .where(eq(feeds.url, feedUrl));
   return result;
+}
+
+
+/* READ: Returns feed name for feed. */
+export async function getFeedNameById(feedId: string): Promise<string | undefined> {
+  const [result] = await db
+    .select()
+    .from(feeds)
+    .where(eq(feeds.id, feedId));
+  return result.name;
 }

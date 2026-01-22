@@ -15,7 +15,8 @@ export const COMMANDS = {
   AGGREGATOR: { name: "agg", args: 0, handler: Cmds.handlerAggregator },
   ADDFEED: { name: "addfeed", args: 2, handler: Cmds.handlerAddFeed },
   FEEDS: { name: "feeds", args: 0, handler: Cmds.handlerFeeds },
-  FOLLOW: { name: "follow", args: 1, handler: Cmds.handlerFollow }
+  FOLLOW: { name: "follow", args: 1, handler: Cmds.handlerFollow },
+  FOLLOWING: { name: "following", args: 0, handler: Cmds.handlerFollowing }
 } as const;
 
 

@@ -5,9 +5,9 @@
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
 import { updateUsername, readConfig } from "./file-handling.js";
 import { User, createUser, getUsers, getUserByName, getUserByID, resetTable } from "./db-users-queries.js";
-import { Feed, createFeed, getFeeds, getFeedByUrl } from "./db-feeds-queries.js";
+import { Feed, createFeed, getFeeds, getFeedByUrl, getFeedNameById } from "./db-feeds-queries.js";
+import { createFeedFollow, getFeedFollow, getFollowedFeedIds } from "./db-feeds-follows-queries.js";
 import { fetchFeed } from "./rss.js";
-import { createFeedFollow, getFeedFollow } from "./db-feeds-follows-queries.js";
 
 
 // --------------------
@@ -167,8 +167,8 @@ export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<
 
 
 /**
- * addfeed command: Creates feed record in feeds table.
- * Throws an error if cannot add record.
+ * addfeed command: Creates feed record in feeds table and entry in feedsfollows table.
+ * Throws an error if cannot create feed.
  */
 export async function handlerAddFeed(cmdName: string, ...args: string[]): Promise<void> {
     // Get table record values to pass
@@ -187,6 +187,12 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
     const feed = await createFeed(
         name,
         url,
+        user.id,
+    );
+
+    // Create feed linked to user
+    const feedFollow = await createFeedFollow(
+        feed.id,
         user.id,
     );
 
@@ -235,4 +241,26 @@ export async function handlerFollow(cmdName: string, ...args: string[]): Promise
     // Success message
     console.log("User followed feed successfully:");
     console.log(`Feed: ${feed.name}, User: ${user.name}`);
+}
+
+
+/**
+ * following command: Returns feed names the current user follows in the feeds_follows table.
+ * Returns an empty array if no feeds are followed.
+ */
+export async function handlerFollowing(cmdName: string, ...args: string[]): Promise<void> {
+    // Use current username to retrieve current user id
+    const userName = readConfig().currentUserName;
+    const user = await getUserByName(userName) as User;
+
+    // Get feed IDs user follows
+    const feedIds = await getFollowedFeedIds(user.id);
+
+    // Normalize feed names per field id
+    const feedNames = (await Promise.all(
+        feedIds.map(feedId => getFeedNameById(feedId))
+    )).filter((name): name is string => Boolean(name));
+
+    // Success message
+    console.log(`Feeds followed: ${feedNames.join(", ")}`);
 }
