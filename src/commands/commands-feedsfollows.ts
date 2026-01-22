@@ -1,5 +1,5 @@
-import { createFeedFollow, getFeedFollow, getFollowedFeedIds } from "../db-feeds-follows-queries.js";
-import { getFeedByUrl, getFeedNameById } from "../db-feeds-queries.js";
+import { createFeedFollow, getFeedFollow, getFollowedFeedIds } from "../db/db-feeds-follows-queries.js";
+import { getFeedByUrl, getFeedNameById } from "../db/db-feeds-queries.js";
 import { readConfig } from "../file-handling.js";
 import { getCurrentUser } from "./commands-helpers.js";
 

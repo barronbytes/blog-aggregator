@@ -9,7 +9,7 @@
  */
 import { eq } from "drizzle-orm";
 import { db } from "./db-client.js";
-import { users } from "../data/schemas/users-table.schema.js";
+import { users } from "../../data/schemas/users-table.schema.js";
 
 
 // --------------------

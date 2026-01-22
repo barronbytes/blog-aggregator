@@ -8,7 +8,7 @@
  */
 import { eq } from "drizzle-orm";
 import { db } from "./db-client.js";
-import { feeds } from "../data/schemas/feeds-table.schema.js"; 
+import { feeds } from "../../data/schemas/feeds-table.schema.js"; 
 
 
 // --------------------
