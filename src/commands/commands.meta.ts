@@ -19,7 +19,8 @@ export const COMMANDS = {
   ADDFEED: { name: "addfeed", args: 2, handler: FeedCmds.handlerAddFeed },
   FEEDS: { name: "feeds", args: 0, handler: FeedCmds.handlerFeeds },
   FOLLOW: { name: "follow", args: 1, handler: FeedsFollowsCmds.handlerFollow },
-  FOLLOWING: { name: "following", args: 0, handler: FeedsFollowsCmds.handlerFollowing }
+  FOLLOWING: { name: "following", args: 0, handler: FeedsFollowsCmds.handlerFollowing },
+  UNFOLLOW: { name: "unfollow", args: 1, handler: FeedsFollowsCmds.handlerUnfollow },
 } as const;
 
 

@@ -56,3 +56,16 @@ export async function getFollowedFeedIds(userId: string): Promise<string[]> {
     .where(eq(FeedsFollows.userId, userId));
   return result.map(row => row.feedId);
 }
+
+
+/* DELETE: Deletes single row from  table. */
+export async function deleteEntry(feedId: string, userId: string): Promise<void> {
+  await db
+    .delete(FeedsFollows)
+    .where(
+      and(
+        eq(FeedsFollows.feedId, feedId),
+        eq(FeedsFollows.userId, userId),
+      )
+    );
+}

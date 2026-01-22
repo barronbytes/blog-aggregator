@@ -1,7 +1,7 @@
 import { createFeed, getFeeds } from "../db/db-feeds-queries.js";
 import { createFeedFollow } from "../db/db-feeds-follows-queries.js";
 import { getUserByID } from "../db/db-users-queries.js";
-import { getCurrentUser, printFeed } from "./commands-helpers.js";
+import { checkCurrentUser, printFeed } from "./commands-helpers.js";
 
 
 /**
@@ -13,7 +13,7 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
     const [name, url] = args;
 
     // Exit program if user not registered
-    const user = await getCurrentUser();
+    const user = await checkCurrentUser();
 
     // Create feed linked to user
     const feed = await createFeed(

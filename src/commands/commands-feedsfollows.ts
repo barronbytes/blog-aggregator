@@ -1,7 +1,7 @@
-import { createFeedFollow, getFeedFollow, getFollowedFeedIds } from "../db/db-feeds-follows-queries.js";
-import { getFeedByUrl, getFeedNameById } from "../db/db-feeds-queries.js";
+import { createFeedFollow, getFeedFollow, getFollowedFeedIds, deleteEntry } from "../db/db-feeds-follows-queries.js";
+import { Feed, getFeedByUrl, getFeedNameById } from "../db/db-feeds-queries.js";
 import { readConfig } from "../file-handling.js";
-import { getCurrentUser } from "./commands-helpers.js";
+import { checkCurrentUser, checkField } from "./commands-helpers.js";
 
 
 /**
@@ -14,7 +14,7 @@ export async function handlerFollow(cmdName: string, ...args: string[]): Promise
     const userName = readConfig().currentUserName;
 
     // Exit program if user or feed not registered
-    const user = await getCurrentUser();
+    const user = await checkCurrentUser();
     const feed = await getFeedByUrl(feedUrl);
     if (!feed) {
         throw new Error(`Error: Feed "${feedUrl}" does not exist.`);
@@ -48,7 +48,7 @@ export async function handlerFollowing(cmdName: string, ...args: string[]): Prom
     const userName = readConfig().currentUserName;
 
     // Exit program if user not registered
-    const user = await getCurrentUser();
+    const user = await checkCurrentUser();
 
     // Get feed IDs user follows
     const feedIds = await getFollowedFeedIds(user.id);
@@ -60,4 +60,24 @@ export async function handlerFollowing(cmdName: string, ...args: string[]): Prom
 
     // Success message
     console.log(`Feeds followed: ${feedNames.join(", ")}`);
+}
+
+
+/**
+ * unfollow command: Removes entry in feeds_follows table with supplied feed url by user.
+ * Sends error message if user did not follow supplied feed url.
+ */
+export async function handlerUnfollow(cmdName: string, ...args: string[]): Promise<void> {
+    // Retrieve feed by feed url
+    const feedUrl = args[0];
+    const feed = await checkField(feedUrl);
+
+    // Retrieve current user
+    const user = await checkCurrentUser();
+
+    // Deletes all rows from users table.
+    await deleteEntry(feed.id, user.id);
+
+    // Success message
+    console.log("Successfully removed entry from feed_follows table.");
 }
