@@ -220,9 +220,14 @@ export async function handlerFollow(cmdName: string, ...args: string[]): Promise
 
     // Exit program if feed not registered
     const feed = await getFeedByUrl(feedUrl);
-    const user = await getUserByName(userName) as User;
     if (!feed) {
         throw new Error(`Error: Feed "${feedUrl}" does not exist.`);
+    }
+
+    // Exit program if user not registered
+    const user = await getUserByName(userName);
+    if (!user) {
+        throw new Error(`Error: User "${userName}" does not exist.`);
     }
 
     // Exit program if entry with feed.id and user.id already exists in feeds_follows table
@@ -249,9 +254,15 @@ export async function handlerFollow(cmdName: string, ...args: string[]): Promise
  * Returns an empty array if no feeds are followed.
  */
 export async function handlerFollowing(cmdName: string, ...args: string[]): Promise<void> {
-    // Use current username to retrieve current user id
+    // Retrieve name of current user logged in session
     const userName = readConfig().currentUserName;
-    const user = await getUserByName(userName) as User;
+
+    // Exit program if user not registered
+    const user = await getUserByName(userName);
+    if (!user) {
+        throw new Error(`Error: User "${userName}" does not exist.`);
+    }
+
 
     // Get feed IDs user follows
     const feedIds = await getFollowedFeedIds(user.id);
