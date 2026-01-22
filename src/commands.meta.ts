@@ -1,4 +1,7 @@
 import * as Cmds from "./commands.js";
+import * as UserCmds from "./commands-users.js";
+import * as FeedCmds from "./commands-feeds.js";
+import * as FeedsFollowsCmds from "./commands-feedsfollows.js";
 
 
 /**
@@ -8,15 +11,15 @@ import * as Cmds from "./commands.js";
  * - handler: function that handles command
  */
 export const COMMANDS = {
-  RESET: { name: "reset", args: 0, handler: Cmds.handlerReset },
-  USERS: { name: "users", args: 0, handler: Cmds.handlerUsers },
-  REGISTER: { name: "register", args: 1, handler: Cmds.handlerRegister },
-  LOGIN: { name: "login", args: 1, handler: Cmds.handlerLogin },
+  RESET: { name: "reset", args: 0, handler: UserCmds.handlerReset },
+  USERS: { name: "users", args: 0, handler: UserCmds.handlerUsers },
+  REGISTER: { name: "register", args: 1, handler: UserCmds.handlerRegister },
+  LOGIN: { name: "login", args: 1, handler: UserCmds.handlerLogin },
   AGGREGATOR: { name: "agg", args: 0, handler: Cmds.handlerAggregator },
-  ADDFEED: { name: "addfeed", args: 2, handler: Cmds.handlerAddFeed },
-  FEEDS: { name: "feeds", args: 0, handler: Cmds.handlerFeeds },
-  FOLLOW: { name: "follow", args: 1, handler: Cmds.handlerFollow },
-  FOLLOWING: { name: "following", args: 0, handler: Cmds.handlerFollowing }
+  ADDFEED: { name: "addfeed", args: 2, handler: FeedCmds.handlerAddFeed },
+  FEEDS: { name: "feeds", args: 0, handler: FeedCmds.handlerFeeds },
+  FOLLOW: { name: "follow", args: 1, handler: FeedsFollowsCmds.handlerFollow },
+  FOLLOWING: { name: "following", args: 0, handler: FeedsFollowsCmds.handlerFollowing }
 } as const;
 
 
