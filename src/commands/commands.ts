@@ -3,7 +3,6 @@
  * N+1 Problem: https://medium.com/@bvsahane89/understanding-the-n-1-problem-in-rest-api-design-causes-consequences-and-solutions-28d9d3d47860
  */
 import type { CommandHandler, CommandRegistry } from "./commands.types.js";
-import { fetchFeed } from "../api/rss.js";
 
 
 // --------------------
@@ -39,22 +38,4 @@ export async function runCommand(
     }
 
     await handler(cmdName, ...args);
-}
-
-
-// --------------------
-// RSS API
-// --------------------
-
-
-/**
- * Aggregator command: Returns XML object for RSS feed.
- * fetchFeed() handles HTTP, Fetch, Validation, or Unknown errors.
- */
-export async function handlerAggregator(cmdName: string, ...args: string[]): Promise<void> {
-    const requestURL = "https://www.wagslane.dev/index.xml";
-    const rssXML = await fetchFeed(requestURL);
-
-    // Success message
-    console.log(JSON.stringify(rssXML, null, 2));
 }

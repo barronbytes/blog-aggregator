@@ -1,7 +1,7 @@
-import * as Cmds from "./commands.js";
 import * as UserCmds from "./commands-users.js";
 import * as FeedCmds from "./commands-feeds.js";
 import * as FeedsFollowsCmds from "./commands-feedsfollows.js";
+import * as RssCmds from "./commands-rss.js";
 
 
 /**
@@ -15,12 +15,12 @@ export const COMMANDS = {
   USERS: { name: "users", args: 0, handler: UserCmds.handlerUsers },
   REGISTER: { name: "register", args: 1, handler: UserCmds.handlerRegister },
   LOGIN: { name: "login", args: 1, handler: UserCmds.handlerLogin },
-  AGGREGATOR: { name: "agg", args: 0, handler: Cmds.handlerAggregator },
   ADDFEED: { name: "addfeed", args: 2, handler: FeedCmds.handlerAddFeed },
   FEEDS: { name: "feeds", args: 0, handler: FeedCmds.handlerFeeds },
   FOLLOW: { name: "follow", args: 1, handler: FeedsFollowsCmds.handlerFollow },
   FOLLOWING: { name: "following", args: 0, handler: FeedsFollowsCmds.handlerFollowing },
   UNFOLLOW: { name: "unfollow", args: 1, handler: FeedsFollowsCmds.handlerUnfollow },
+  AGGREGATOR: { name: "agg", args: 0, handler: RssCmds.handlerAggregator },
 } as const;
 
 
