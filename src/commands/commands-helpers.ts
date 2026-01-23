@@ -22,7 +22,7 @@ export function printFeed(feed: Feed, user: User): void {
 
 
 /* Helper function to determine if feed url exists. */
-export async function checkField(feedUrl: string): Promise<Feed> {
+export async function checkFeedByUrl(feedUrl: string): Promise<Feed> {
     const feed = await getFeedByUrl(feedUrl);
     if (!feed) throw new Error(`Feed url "${feedUrl}" does not exist.`);
     return feed;
@@ -60,4 +60,26 @@ export async function scrapeFeeds(): Promise<void> {
 
     // Print titles of all feed items
     printFeedItemTitles(rssXML);
+}
+
+
+/* Helper function to parse input duration time and units of "1s", "1m", "1h" into milliseconds. */
+export function normalizeTimeToMilliseconds(durationStr: string): number {
+    // Catch a match for expected regex pattern.
+    const regex = /^(\d+)(ms|s|m|h)$/;
+    const match = durationStr.match(regex);
+    if (!match) throw new Error(`Invalid duration string: ${durationStr}. Expected format: <number><ms|s|m|h>`);
+
+    // Catch numerical value and units from match.
+    const value = Number(match[1]);
+    const unit = match[2];
+
+    // Use match results to normalize time numerical value to milleseconds.
+    switch (unit) {
+        case "ms": return value;
+        case "s": return value * 1000;
+        case "m": return value * 1000 * 60;
+        case "h": return value * 1000 * 60 * 60;
+        default: throw new Error(`Unknown duration unit: ${unit}.`);
+    }
 }

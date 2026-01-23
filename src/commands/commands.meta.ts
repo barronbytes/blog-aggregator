@@ -20,7 +20,7 @@ export const COMMANDS = {
   FOLLOW: { name: "follow", args: 1, handler: FeedsFollowsCmds.handlerFollow },
   FOLLOWING: { name: "following", args: 0, handler: FeedsFollowsCmds.handlerFollowing },
   UNFOLLOW: { name: "unfollow", args: 1, handler: FeedsFollowsCmds.handlerUnfollow },
-  AGGREGATOR: { name: "agg", args: 0, handler: RssCmds.handlerAggregator },
+  AGGREGATOR: { name: "agg", args: 1, handler: RssCmds.handlerAggregator },
 } as const;
 
 
