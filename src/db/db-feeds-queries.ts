@@ -61,3 +61,15 @@ export async function getFeedNameById(feedId: string): Promise<string | undefine
     .where(eq(feeds.id, feedId));
   return result.name;
 }
+
+
+/* UPDATE: Marks a feed as fetched by setting timestamps. */
+export async function updateFetchedTime(feedId: string): Promise<void> {
+  await db
+    .update(feeds)
+    .set({
+      updatedAt: new Date(),
+      lastFetchedAt: new Date(),
+    })
+    .where(eq(feeds.id, feedId));
+}
