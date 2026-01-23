@@ -7,6 +7,7 @@
  * DELETE: https://orm.drizzle.team/docs/delete
  */
 import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { db } from "./db-client.js";
 import { feeds } from "../../data/schemas/feeds-table.schema.js"; 
 
@@ -60,6 +61,19 @@ export async function getFeedNameById(feedId: string): Promise<string | undefine
     .from(feeds)
     .where(eq(feeds.id, feedId));
   return result.name;
+}
+
+
+/* READ: Returns the next feed to fetch. 
+ * Prioritizes last_fetched_at values of NULL first, then oldest NON-NULL timestamp next.
+ */
+export async function getNextFeedToFetch(): Promise<Feed | undefined> {
+  const [feed] = await db
+    .select()
+    .from(feeds)
+    .orderBy(sql`last_fetched_at ASC NULLS FIRST`) // NULLs first, then by oldest timestamps
+    .limit(1);
+  return feed;
 }
 
 
