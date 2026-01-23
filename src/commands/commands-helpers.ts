@@ -44,22 +44,8 @@ async function checkFeedsByTimestamps(): Promise<Feed> {
 /* Helper function to print field item titles if present in rss feed. */
 function printFeedItemTitles(rssFeed: RSSFeed): string[] {
     const titles = rssFeed.rss.channel.item.map(item => item.title);
-    titles.forEach(title => console.log(title));
+    titles.forEach(title => console.log(`- ${title}`));
     return titles;
-}
-
-
-/* Aggregation function that fetches feed, marks it as fetched, prints item titles */
-export async function scrapeFeeds(): Promise<void> {
-    // Get the next feed to fetch.
-    const feed = await checkFeedsByTimestamps();
-
-    // Fetch feed XML.
-    const requestURL = feed.url;
-    const rssXML = await fetchFeed(requestURL);
-
-    // Print titles of all feed items
-    printFeedItemTitles(rssXML);
 }
 
 
@@ -82,4 +68,44 @@ export function normalizeTimeToMilliseconds(durationStr: string): number {
         case "h": return value * 1000 * 60 * 60;
         default: throw new Error(`Unknown duration unit: ${unit}.`);
     }
+}
+
+
+/* Aggregation function that fetches feed, marks it as fetched, prints item titles */
+export async function scrapeFeeds(): Promise<void> {
+    // Get the next feed to fetch.
+    const feed = await checkFeedsByTimestamps();
+
+    // Fetch feed XML.
+    const requestURL = feed.url;
+    const rssXML = await fetchFeed(requestURL);
+
+    // Print titles of all feed items
+    console.log(`Feed name: ${feed.name}`);
+    printFeedItemTitles(rssXML);
+}
+
+
+/**
+ * Centralized error handler for scrapeFeeds(), which is async and cannot use try-catch blocks.
+ * Use with: scrapeFeeds().catch(handleScrapeError), which can handle aync errors.
+ * Logs errors without exiting the process.
+ */
+export function handleScrapeError(err: unknown): void {
+    console.error("Error scraping feeds:", err);
+}
+
+
+/**
+ * Helper function that listens for the SIGINT signal (sent by the terminal on Ctrl+C),
+ * then clears the provided setInterval() and allows the process to exit cleanly.
+ */
+export async function handleSignalCtrlC(interval: NodeJS.Timeout): Promise<void> {
+    await new Promise<void>((resolve) => {
+        process.on("SIGINT", () => {
+            console.log("Shutting down feed aggregator...");
+            clearInterval(interval);
+            resolve();
+        });
+    });
 }
