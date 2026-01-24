@@ -1,8 +1,9 @@
 import { readConfig } from "../file-handling.js";
 import { User, getUserByName } from "../db/db-users-queries.js";
 import { Feed, getFeedByUrl, getNextFeedToFetch, updateFetchedTime } from "../db/db-feeds-queries.js";
+import { createPost } from "src/db/db-posts-queries.js";
 import { fetchFeed } from "../api/rss.js";
-import { type RSSFeed } from "src/api/rss.types.js";
+import type { RSSFeed } from "src/api/rss.types.js";
 
 
 /* Helper function to ensure user exists. */
@@ -71,18 +72,30 @@ export function normalizeTimeToMilliseconds(durationStr: string): number {
 }
 
 
-/* Aggregation function that fetches feed, marks it as fetched, prints item titles */
+/* 
+ * Aggregation function that fetches the next feed, retrieves its posts,
+ * and saves them to the database. Each post is guaranteed by fetchFeed()
+ * to have the required fields. Individual insert failures are caught
+ * and logged without stopping the rest of the items.
+ */
 export async function scrapeFeeds(): Promise<void> {
     // Get the next feed to fetch.
     const feed = await checkFeedsByTimestamps();
 
-    // Fetch feed XML.
+    // Fetch normalized rss data and use it to retrieve feed items.
     const requestURL = feed.url;
     const rssXML = await fetchFeed(requestURL);
+    const items = rssXML.rss.channel.item;
 
-    // Print titles of all feed items
-    console.log(`Feed name: ${feed.name}`);
-    printFeedItemTitles(rssXML);
+    // Save each valid post to the database.
+    for (const item of items) {
+        try {
+            const publishedAt = new Date(item.pubDate);
+            await createPost(item.title, item.link, item.description, publishedAt, feed.id);
+        } catch (err) {
+            console.error(`Failed to save post "${item.title}":`, err);
+        }
+    }
 }
 
 
