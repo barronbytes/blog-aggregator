@@ -1,6 +1,6 @@
 # Blog Aggregator
 
-This is a terminal app currently in-progress that works locally. The usage section of this README details the comamnds the app accepts. The program uses two local PostgreSQL tables to store user and RSS feed information. When complete, the commands and database functions will be extended to save and return any RSS feed data. At the moment the app currently only accepts one RSS feed.
+CLI-based RSS aggregator that translates user commands into TypeScript function calls. These functions execute PostgreSQL operations and return user, feed, follow, and post data as terminal output.
 
 **Project Demo:**
 
@@ -17,9 +17,27 @@ This is a terminal app currently in-progress that works locally. The usage secti
 
 ```
 blog-aggregator/
-├── 
-├── 
-└── README.md                       # Project documentation
+├── data/
+│   ├── configs/            # Stores PostgreSQL connection and user information
+│   ├── generated/          # Auto-generated SQL by drizzle for full table definitions
+│   ├── migrations/         # Programmer-created SQL for incremental table changes
+│   └── schemas/            # Database table schema definitions
+├── node_modules/
+├── src/
+│   ├── api/                # RSS request/response typing and validation for HTTP fetch() calls
+│   ├── commands/           # CLI command definitions, metadata, and function call handlers
+│   ├── db/                 # Database queries and CRUD operations
+│   ├── arguments.ts        # Parses and validates user CLI input
+│   ├── file-handling.ts    # Updates active user in ./data/configs for SQL operations
+│   └── index.ts            # Application entry point
+├── .gitignore              # Ignored files
+├── .env                    # Environment variables
+├── drizzle.config.ts
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── .nvmrc                  
+└── README.md               # Documentation
 
 # Before running this project locally, ensure you have the following installed:
 - IDE (VS Code, PyCharm, etc.)
