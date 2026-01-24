@@ -4,7 +4,9 @@ import { getPostsForUser } from "src/db/db-posts-queries.js";
 
 
 /**
- * Aggregator command: Returns XML object for RSS feed.
+ * Aggregator command: Accepts time string that runs loop that saves feed items in posts table.
+ * Feeds are scraped in order of last_fetched_at values of NULL first, then oldest NON-NULL timestamp next.
+ * User can type "Ctrl+C" to terminate loop.
  */
 export async function handlerAggregator(cmdName: string, ...args: string[]): Promise<void> {
     // Determine input time in milliseconds and print timing message.

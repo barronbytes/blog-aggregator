@@ -111,19 +111,30 @@ data/generated/meta/
 
 > `npm run start COMMAND [ARGUMENTS]`
 
-This program has numerous commands that each enforce passing the correct number of arguments. Error messages are printed out with usage advice whenever this contract is broken.
+This application supports multiple commands, each requiring a specific number of arguments. If a user enters an invalid command or provides an incorrect number of arguments, the program prints an error message along with usage instructions.
 
 **Program Commands**
 
-As stated, each command must be precedded by `npm run start` in the terminal. This list mentions the `COMMAND [ARGUMENTS]` portion of commands that must be passed.
+Here are valid `COMMAND [ARGUMENTS]` combinations by table. Of special note is that the `agg` command runs on an infinite loop, which can be terminated by typing `Ctlr+C`. APIs may flag use of the `agg` command based upon request time frequencies.
 
-> `reset`: No arguments. Clears all records from `users` table.
-> `users`: No arguments. Returns all users from `users` table.
-> `register username`: 1 argument. Creates new record in `users` table.
-> `login username`: 1 argument. Authenticates user for database activity.
-> `agg`: 0 arguments. Returns validated XML from RSS feed.
-> `addfeed name url`: 2 arguments. Creates new record in `feeds` table.
-> `feeds`: 0 arguments. Returns all feeds from `feeds` table.
+**users:**
+- `register username`: Creates new user record
+- `users`: Returns all users
+- `login username`: Updates user logged in for tracking database operations
+- `reset`: Deletes all users
+
+**feeds:**
+- `addfeed name url`: Creates new feed record
+- `feeds`: Returns all feeds
+
+**feeds_follows:**
+- `follow feedUrl`: Creates join table record for feed followed by user
+- `following`: Returns feed names the user follows
+- `unfollow feedUrl`: Deletes single record for feed followed by user
+
+**posts:**
+- `agg timeString`: Creates feed item records for feeds followed by user, limiting requests times
+- `browse limitString`: Returns feed item data for feeds followed by user, limiting output rows
 
 ## System Design
 
