@@ -6,9 +6,10 @@
  * UPDATE: https://orm.drizzle.team/docs/update
  * DELETE: https://orm.drizzle.team/docs/delete
  */
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { db } from "./db-client.js";
 import { posts } from "../../data/schemas/posts-table.schema.js"; 
+import { FeedsFollows } from "../../data/schemas/feeds-follows-table.schema.js";
 
 
 // --------------------
@@ -33,4 +34,24 @@ export async function createPost(
     .values({ title, url, description, publishedAt, feedId })
     .returning();
   return result;
+}
+
+
+/* READ: Returns the most recent posts from feeds followed by the given user.
+ * The number of posts returned is limited by the 'rows' parameter.
+ * Drizzle's eq() method can compare (column, column) or (column, value)!!!
+ * SQL joins produce flat tables, but Drizzlels ORM nests table rows, so possible to map row.posts!!!
+ */
+export async function getPostsForUser(userId: string, rows: number): Promise<Post[] | undefined> {
+  const results = await db
+    .select()
+    .from(posts)
+    .innerJoin(
+      FeedsFollows,
+      eq(posts.feedId, FeedsFollows.feedId) // column = column
+    )
+    .where(eq(FeedsFollows.userId, userId)) // column = value
+    .orderBy(desc(posts.publishedAt))       // most recent first
+    .limit(rows);
+  return results.map(row => row.posts);
 }
