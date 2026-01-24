@@ -64,23 +64,46 @@ blog-aggregator/
 
 This repo will later be, if not already, saved as a subfolder. Be sure to only clone relevant files. Then, do the following:
 
-### Project and Dependencies Setup
+### NodeJS Project Setup
 
 1. Clone repository
 2. Install [NVM](https://github.com/nvm-sh/nvm)
-3. Activate v22.15.0 from `.nvmrc` file: `nvm use`
-4. Initialize Node.JS project: `npm init -y`
-5. Install dev dependencies: `npm install -D typescript @types/node tsx drizzle-kit`
-6. Install regular dependencies: `npm install dotenv zod fast-xml-parser postgres drizzle-orm`
-7. Setup configuration files as found here: `tsconfig.json`, `package.json`, `drizzle.config.ts`
+   - Save `22.15.0` to `.nvmrc` file
+   - Run `nvm use` command to activate node version
+3. Run `npm init -y` command to initialize Node.JS project
+4. Install dev dependencies: `npm install -D typescript @types/node tsx drizzle-kit`
+5. Install regular dependencies: `npm install dotenv zod fast-xml-parser postgres drizzle-orm`
+6. Setup configuration files as found here: `tsconfig.json`, `package.json`
 
-### Environmental Variables Setup
+### PostgreSQL Database Setup
 
-...
+1. Install [PostgreSQL](https://www.postgresql.org/)
+2. Linux (set password): `sudo passwd postgres`
+3. Linux (enter psql shell): `sudo -u postgres psql`
+4. SQL (create database): `CREATE DATABASE gator;`
+5. Drizzle already installed as ORM (steps 4 and 5 above)
+6. Save `drizzle.config.ts` file (already done here): includes schema and migration output directors, database type, and database connection url
+7. Configure `./data/configs/.db-user-connection.json`: add your local PostgreSQL URL and default username
 
-### .gitignore File Setup
+### Environmental Variables
 
-...
+Open the `.env` file and save your local PostgreSQL connection URL. The URL should end with `gator` (the database name) and include `?sslmode=disable` to turn off SSL/TLS encryption, since the application and database run locally on the same machine.
+
+```
+DB_URL=postgres://postgres:postgres@localhost:5432/gator?sslmode=disable
+DB_CONFIG_DIR=./data/configs
+DB_CONFIG_FILE=.db-user-connection.json
+```
+
+### .gitignore File
+
+```
+# Node.js dependencies
+node_modules/
+
+# Drizzle ORM metadata (auto-generated, can be rebuilt)
+data/generated/meta/
+```
 
 ## Usage
 
@@ -89,8 +112,6 @@ This repo will later be, if not already, saved as a subfolder. Be sure to only c
 > `npm run start COMMAND [ARGUMENTS]`
 
 This program has numerous commands that each enforce passing the correct number of arguments. Error messages are printed out with usage advice whenever this contract is broken.
-
-At the moment, the program requires you have the following file path saved: `~/gatorconfig.json`. This is a configuration file for the database. A sample structure for the file is found in the `./data/configs` directory in this repository. Additionally, for the program to run you should open the `.env` file and save the `DB_CONFIG_DIR=/home/YOUR_USERNAME` variable to include your username instead of mine. This program will later be updated to avoid these manual adjustments. 
 
 **Program Commands**
 
