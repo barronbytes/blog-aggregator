@@ -1,10 +1,6 @@
 import { fetchFeed } from "../api/rss.js";
-import { normalizeTimeToMilliseconds, scrapeFeeds, handleScrapeError, handleSignalCtrlC } from "./commands-helpers.js";
-
-
-// --------------------
-// RSS API
-// --------------------
+import * as Helpers from "./commands-helpers.js";
+import { getPostsForUser } from "src/db/db-posts-queries.js";
 
 
 /**
@@ -13,18 +9,49 @@ import { normalizeTimeToMilliseconds, scrapeFeeds, handleScrapeError, handleSign
 export async function handlerAggregator(cmdName: string, ...args: string[]): Promise<void> {
     // Determine input time in milliseconds and print timing message.
     const timeStr = args[0];
-    const timeBtwnRequests = normalizeTimeToMilliseconds(timeStr);
+    const timeBtwnRequests = Helpers.normalizeTimeToMilliseconds(timeStr);
     console.log(`Collecting feeds every ${timeStr}.`);
 
     // Run once immediately; errors are logged but do not stop execution
-    await scrapeFeeds().catch(handleScrapeError);
+    await Helpers.scrapeFeeds().catch(Helpers.handleScrapeError);
 
     // Schedule recurring scrape loop
     const interval = setInterval(
-        () => { scrapeFeeds().catch(handleScrapeError); }, 
+        () => { Helpers.scrapeFeeds().catch(Helpers.handleScrapeError); }, 
         timeBtwnRequests
     );
 
     // Exit setInterval() when user types Ctrl+C on command-line terminal
-    await handleSignalCtrlC(interval);
+    await Helpers.handleSignalCtrlC(interval);
+}
+
+/**
+ * Browse command: Returns posts from users based upon limit provided. Stops for invalid limit.
+ */
+export async function handlerBrowse(cmdName: string, ...args: string[]): Promise<void> {
+    // Parses input limit to a number.
+    const limitStr = args[0];
+    const limit = Number(args[0]);
+
+    if(isNaN(limit) || limit < 0) {
+        console.warn(`Invalid limit "${args[0]}" provided. Must provide a non-negative number.`);
+        return;
+    }
+
+    // Get the current user.
+    const user = await Helpers.checkCurrentUser();
+
+    // Fetch posts from the user with the provided limit.
+    const posts = await getPostsForUser(user.id, limit);
+
+    // Exits early if no posts. Otherwise prints post information.
+    if (!posts || posts.length === 0) {
+        console.log("No posts found for your followed feeds.");
+        return;
+    }
+
+    console.log(`Showing the latest ${posts.length} posts for ${user.name}:`);
+    for (const post of posts) {
+        console.log(`- post(title: ${post.title}, url: ${post.url}, pubDate: ${post.publishedAt})`);
+    }
 }
