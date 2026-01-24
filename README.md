@@ -30,13 +30,14 @@ blog-aggregator/
 │   ├── arguments.ts        # Parses and validates user CLI input
 │   ├── file-handling.ts    # Updates active user in ./data/configs for SQL operations
 │   └── index.ts            # Application entry point
-├── .gitignore              # Ignored files
 ├── .env                    # Environment variables
-├── drizzle.config.ts
-├── package.json
-├── package-lock.json
-├── tsconfig.json
+├── .gitignore              # Ignored files
 ├── .nvmrc                  
+├── drizzle.config.ts
+├── LICENSE
+├── package-lock.json
+├── package.json
+├── tsconfig.json
 └── README.md               # Documentation
 
 # Before running this project locally, ensure you have the following installed:
@@ -48,24 +49,30 @@ blog-aggregator/
 # Dev Dependencies
 - TypeScript: static typing and compilation
 - @types/node: Node.js type definitions for TypeScript
-- drizzle-kit: schema migrations and database tooling
 - tsx: TypeScript execution in Node.js
+- drizzle-kit: schema migrations and database tooling
 
 # Dependencies
 - dotenv: loads environment variables from a .env file
+- zod: runtime schema validation and type-safe data parsing
+- fast-xml-parser: RSS/XML parsing
 - postgres: PostgreSQL client
 - drizzle-orm: type-safe SQL ORM
-- fast-xml-parser: RSS/XML parsing
-- zod: runtime schema validation and type-safe data parsing
 ```
 
 ## Quick Start
 
-Clone relevant files. Then, do the following:
+This repo will later be, if not already, saved as a subfolder. Be sure to only clone relevant files. Then, do the following:
 
 ### Project and Dependencies Setup
 
-...
+1. Clone repository
+2. Install [NVM](https://github.com/nvm-sh/nvm)
+3. Activate v22.15.0 from `.nvmrc` file: `nvm use`
+4. Initialize Node.JS project: `npm init -y`
+5. Install dev dependencies: `npm install -D typescript @types/node tsx drizzle-kit`
+6. Install regular dependencies: `npm install dotenv zod fast-xml-parser postgres drizzle-orm`
+7. Setup configuration files as found here: `tsconfig.json`, `package.json`, `drizzle.config.ts`
 
 ### Environmental Variables Setup
 
