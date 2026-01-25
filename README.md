@@ -124,13 +124,13 @@ Here are valid `COMMAND [ARGUMENTS]` combinations by table. Of special note is t
 - `reset`: Deletes all users
 
 **feeds:**
-- `addfeed name url`: Creates new feed record
+- `addfeed feedName feedUrl`: Creates new feed record
 - `feeds`: Returns all feeds
 
 **feeds_follows:**
-- `follow feedUrl`: Creates join table record for feed followed by user
+- `follow feedName`: Creates join table record for feed followed by user
 - `following`: Returns feed names the user follows
-- `unfollow feedUrl`: Deletes single record for feed followed by user
+- `unfollow feedName`: Deletes single record for feed followed by user
 
 **posts:**
 - `agg timeString`: Creates feed item records for feeds followed by user, limiting requests times

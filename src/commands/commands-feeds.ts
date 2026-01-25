@@ -5,6 +5,7 @@ import { checkCurrentUser, printFeed } from "./commands-helpers.js";
 
 
 /**
+ * Usage: npm run start addfeed feedName feedUrl
  * addfeed command: Creates feed record in feeds table and entry in feedsfollows table.
  * Throws an error if cannot create feed.
  */
@@ -31,11 +32,13 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
     // Success message
     console.log("Success: New feed added to feeds table, and entry added to feeds_follows join table.");
     printFeed(feed, user);
+    console.log("New entry to feeds_follows table:", feedFollow)
 }
 
 
 /**
- * feeds command: Returns all feeds from the feeds table.
+ * Usage: npm run start feeds
+ * Returns all feeds from the feeds table.
  */
 export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<void> {
     // Selects all feeds from the feeds table
@@ -46,7 +49,7 @@ export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<
     for (const feed of allFeeds) {
         const user = await getUserByID(feed.userId);
         const username = user ? user.name : "(unknown)";
-        output.push(`* Feed name: ${feed.name}, Feed url: ${feed.url}, User: ${username}`);
+        output.push(`* Feed name: ${feed.name}, Feed url: ${feed.url}, Registered by: ${username}`);
     }
 
     // Success message

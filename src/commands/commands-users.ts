@@ -3,7 +3,8 @@ import { createUser, getUsers, getUserByName, resetTable } from "../db/db-users-
 
 
 /**
- * register command: Creates user in users table and sets their username for tracking new database operations.
+ * Usage: npm run start register username
+ * Creates user in users table and sets their username for tracking new database operations.
  * Username stored in ./data/configs/.db-user-connection.json file.
  * Throws an error if user is already registered.
  */
@@ -23,11 +24,13 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
 
     // Success messages
     console.log(`Success: User "${username}" saved to users table and set their username for tracking new database operations.`);
+    console.log("New entry saved to users table:", newUser);
 }
 
 
 /**
- * users command: Returns all users from the users table.
+ * Usage: npm run start users
+ * Returns all users from the users table.
  * Throws an error if no users in users table.
  */
 export async function handlerUsers(cmdName: string, ...args: string[]): Promise<void> {
@@ -43,7 +46,7 @@ export async function handlerUsers(cmdName: string, ...args: string[]): Promise<
     const currentUserName = readConfig().currentUserName;
 
     // Success message
-    console.log("Success: all usernames in users table:");
+    console.log("Success: All usernames in users table:");
     const output = allUsers.map(user => {
         const marker = user.name === currentUserName ? " (current)" : "";
         return `* ${user.name}${marker}`;
@@ -53,6 +56,7 @@ export async function handlerUsers(cmdName: string, ...args: string[]): Promise<
 
 
 /*
+* Usage: npm run start login username
 * login command: Updates username stored for tracking new database operations.
 * Username stored in ./data/configs/.db-user-connection.json file.
 * Throws an error if user is not registered.
@@ -76,7 +80,8 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
 
 
 /**
- * reset command: Deletes all users from the users table.
+ * Usage: npm run start reset
+ * Deletes all users from the users table.
  */
 export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {
     // Deletes all rows from users table.

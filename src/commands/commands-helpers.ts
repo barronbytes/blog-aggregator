@@ -1,14 +1,14 @@
 import { readConfig } from "../file-handling.js";
 import { User, getUserByName } from "../db/db-users-queries.js";
-import { Feed, getFeedByUrl, getNextFeedToFetch, updateFetchedTime } from "../db/db-feeds-queries.js";
+import { Feed, getFeedByUrl, getFeedByName, getNextFeedToFetch, updateFetchedTime } from "../db/db-feeds-queries.js";
 import { createPost } from "src/db/db-posts-queries.js";
 import { fetchFeed } from "../api/rss.js";
 import type { RSSFeed } from "src/api/rss.types.js";
 
 
-// --------------------
+// ------------------------------
 // Multi-table helpers
-// --------------------
+// ------------------------------
 
 
 /* Helper function to ensure user exists. */
@@ -20,24 +20,42 @@ export async function checkCurrentUser(): Promise<User> {
 }
 
 
-// --------------------
+// ------------------------------
 // For feeds table
-// --------------------
+// ------------------------------
 
 
 /* Helper function to print user and feed information. */
 export function printFeed(feed: Feed, user: User): void {
-    console.log("Feed:", JSON.stringify(feed, null, 2));
-    console.log("User:", JSON.stringify(user, null, 2));
+    console.log("New entry to feeds table:", JSON.stringify(feed, null, 2));
+    console.log("New entry to users table:", JSON.stringify(user, null, 2));
+}
+
+
+// ------------------------------
+// For feeds_follows table
+// ------------------------------
+
+
+/* Helper function to determine if feed name exists. */
+export async function checkFeedByName(feedName: string): Promise<Feed> {
+    const feed = await getFeedByName(feedName);
+    if (!feed) throw new Error(`Feed name "${feedName}" not followed by user.`);
+    return feed;
 }
 
 
 /* Helper function to determine if feed url exists. */
 export async function checkFeedByUrl(feedUrl: string): Promise<Feed> {
     const feed = await getFeedByUrl(feedUrl);
-    if (!feed) throw new Error(`Feed url "${feedUrl}" does not exist.`);
+    if (!feed) throw new Error(`Feed url "${feedUrl}" not followed by user.`);
     return feed;
 }
+
+
+// ------------------------------
+// For posts table
+// ------------------------------
 
 
 /* Helper function that returns next feed by timestamp to scrape. 

@@ -45,6 +45,16 @@ export async function getFeeds(): Promise<Feed[]> {
 
 
 /* READ: Selects feed by name from the feeds table. */
+export async function getFeedByName(feedName: string): Promise<Feed | undefined> {
+  const [result] = await db
+    .select()
+    .from(feeds)
+    .where(eq(feeds.name, feedName));
+  return result;
+}
+
+
+/* READ: Selects feed by url from the feeds table. */
 export async function getFeedByUrl(feedUrl: string): Promise<Feed | undefined> {
   const [result] = await db
     .select()
