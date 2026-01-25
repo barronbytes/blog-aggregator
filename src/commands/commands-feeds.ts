@@ -29,13 +29,13 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]): Promis
     );
 
     // Success message
-    console.log("Feed added successfully:");
+    console.log("Success: New feed added to feeds table, and entry added to feeds_follows join table.");
     printFeed(feed, user);
 }
 
 
 /**
- * Feeds command: Selects all feeds from the feeds table.
+ * feeds command: Returns all feeds from the feeds table.
  */
 export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<void> {
     // Selects all feeds from the feeds table
@@ -50,5 +50,6 @@ export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<
     }
 
     // Success message
+    console.log("Success: All names and urls in feeds table.");
     console.log(output.join("\n"));
 }

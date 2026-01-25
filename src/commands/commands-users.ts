@@ -3,7 +3,7 @@ import { createUser, getUsers, getUserByName, resetTable } from "../db/db-users-
 
 
 /**
- * Register command: Creates user in users table and sets their username for tracking new database operations.
+ * register command: Creates user in users table and sets their username for tracking new database operations.
  * Username stored in ./data/configs/.db-user-connection.json file.
  * Throws an error if user is already registered.
  */
@@ -27,7 +27,7 @@ export async function handlerRegister(cmdName: string, ...args: string[]): Promi
 
 
 /**
- * Users command: Returns all users from the users table.
+ * users command: Returns all users from the users table.
  * Throws an error if no users in users table.
  */
 export async function handlerUsers(cmdName: string, ...args: string[]): Promise<void> {
@@ -43,7 +43,7 @@ export async function handlerUsers(cmdName: string, ...args: string[]): Promise<
     const currentUserName = readConfig().currentUserName;
 
     // Success message
-    console.log("Users:");
+    console.log("Success: all usernames in users table:");
     const output = allUsers.map(user => {
         const marker = user.name === currentUserName ? " (current)" : "";
         return `* ${user.name}${marker}`;
@@ -53,7 +53,7 @@ export async function handlerUsers(cmdName: string, ...args: string[]): Promise<
 
 
 /*
-* Login command: Updates username stored for tracking new database operations.
+* login command: Updates username stored for tracking new database operations.
 * Username stored in ./data/configs/.db-user-connection.json file.
 * Throws an error if user is not registered.
 */
@@ -71,17 +71,17 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
     updateUsername(username);
 
     // Success message
-    console.log(`Success: User "${username}" has been set as the current user for tracking new database operations.`);
+    console.log(`Success: Updated "${username}" as the current user for tracking new database operations.`);
 }
 
 
 /**
- * Reset command: Deletes all users from the users table.
+ * reset command: Deletes all users from the users table.
  */
 export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {
     // Deletes all rows from users table.
     await resetTable();
 
     // Success message
-    console.log("Users table reset successfully.");
+    console.log("Success: Deleted all users from the users table.");
 }

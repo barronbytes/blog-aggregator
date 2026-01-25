@@ -6,6 +6,11 @@ import { fetchFeed } from "../api/rss.js";
 import type { RSSFeed } from "src/api/rss.types.js";
 
 
+// --------------------
+// Multi-table helpers
+// --------------------
+
+
 /* Helper function to ensure user exists. */
 export async function checkCurrentUser(): Promise<User> {
     const userName = readConfig().currentUserName;
@@ -13,6 +18,11 @@ export async function checkCurrentUser(): Promise<User> {
     if (!user) throw new Error(`User "${userName}" does not exist.`);
     return user;
 }
+
+
+// --------------------
+// For feeds table
+// --------------------
 
 
 /* Helper function to print user and feed information. */
