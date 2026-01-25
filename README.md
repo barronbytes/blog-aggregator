@@ -1,10 +1,8 @@
 # Blog Aggregator
 
-CLI-based RSS aggregator that translates user commands into TypeScript function calls. These functions execute PostgreSQL operations and return user, feed, follow, and post data as terminal output.
+CLI-based application for fetching data from any RSS feed. User commands trigger TypeScript functions that execute PostgreSQL operations and return user, feed, follow, and post data as terminal output.
 
-**Project Demo:**
-
-...
+![This app downloads RSS items for any RSS feed.](./public/project-banner.png)
 
 ## Tech Stack
 
@@ -17,6 +15,7 @@ CLI-based RSS aggregator that translates user commands into TypeScript function 
 
 ```
 blog-aggregator/
+├── public/                 # Media assets
 ├── data/
 │   ├── configs/            # Stores PostgreSQL connection and user information
 │   ├── generated/          # Auto-generated SQL by drizzle for full table definitions
