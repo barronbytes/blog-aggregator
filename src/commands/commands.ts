@@ -34,7 +34,7 @@ export async function runCommand(
     const handler = registry[cmdName];
 
     if (!handler) {
-        throw new Error(`Error: Failed to provide a "${cmdName}" with a handler function in registry.`);
+        throw new Error(`Failed to provide a "${cmdName}" with a handler function in registry.`);
     }
 
     await handler(cmdName, ...args);

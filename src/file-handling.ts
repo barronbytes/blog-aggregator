@@ -62,7 +62,7 @@ export function readConfig(): Config {
     const filePath = getConfigFilePath();
 
     if(!fs.existsSync(filePath)) {
-        throw new Error(`Error: invalid file path: ${filePath}`);
+        throw new Error(`Invalid file path: ${filePath}`);
     }
 
     try {
@@ -73,11 +73,11 @@ export function readConfig(): Config {
 
     } catch (err: any) {
         if (err.message === "VALIDATION_FAIL") {
-            throw new Error(`Error: validation failure for file: ${filePath}`);
+            throw new Error(`Validation failure for file: ${filePath}`);
         } else if (err instanceof SyntaxError) {
-            throw new Error(`Error: parsing failure for file: ${filePath}`);
+            throw new Error(`Parsing failure for file: ${filePath}`);
         } else {
-            throw new Error(`Error: failure reading file: ${filePath}`);
+            throw new Error(`Failure reading file: ${filePath}`);
         }    }
 }
 
@@ -101,7 +101,7 @@ function writeConfig(cfg: Config): void {
         fs.writeFileSync(filePath, dataString, "utf-8");
 
     } catch (err: any) {
-        throw new Error(`Error: could not write to file: ${filePath}`);
+        throw new Error(`Could not write to file: ${filePath}`);
     }
 }
 
@@ -115,7 +115,7 @@ export function updateUsername(username: string): void {
     let config: Config;
 
     if (!DB_URL) {
-        throw new Error("Error: DB_URL is required but not set as an environment variable.");
+        throw new Error("DB_URL is required but not set as an environment variable.");
     }
 
     try {
