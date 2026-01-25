@@ -1,7 +1,7 @@
 import { createFeedFollow, getFeedFollow, getFollowedFeedIds, deleteEntry } from "../db/db-feeds-follows-queries.js";
 import { getFeedByName, getFeedNameById } from "../db/db-feeds-queries.js";
 import { readConfig } from "../file-handling.js";
-import { checkCurrentUser, checkFeedByUrl, checkFeedByName } from "./commands-helpers.js";
+import { checkCurrentUser, checkFeedByName } from "./commands-helpers.js";
 
 
 /**

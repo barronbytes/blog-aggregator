@@ -1,10 +1,10 @@
-import { fetchFeed } from "../api/rss.js";
 import * as Helpers from "./commands-helpers.js";
 import { getPostsForUser } from "src/db/db-posts-queries.js";
 
 
 /**
- * Aggregator command: Accepts time string that runs loop that saves feed items in posts table.
+ * Usage: npm run start agg timeString
+ * Accepts time string that runs loop that saves feed items in posts table.
  * Feeds are scraped in order of last_fetched_at values of NULL first, then oldest NON-NULL timestamp next.
  * User can type "Ctrl+C" to terminate loop.
  */
@@ -14,7 +14,7 @@ export async function handlerAggregator(cmdName: string, ...args: string[]): Pro
     const timeBtwnRequests = Helpers.normalizeTimeToMilliseconds(timeStr);
     console.log(`Collecting feeds every ${timeStr}.`);
 
-    // Run once immediately; errors are logged but do not stop execution
+    // Run once immediately; errors are logged but do not stop execution.
     await Helpers.scrapeFeeds().catch(Helpers.handleScrapeError);
 
     // Schedule recurring scrape loop
@@ -23,12 +23,14 @@ export async function handlerAggregator(cmdName: string, ...args: string[]): Pro
         timeBtwnRequests
     );
 
-    // Exit setInterval() when user types Ctrl+C on command-line terminal
+    // Exit setInterval() when user types Ctrl+C on command-line terminal.
     await Helpers.handleSignalCtrlC(interval);
 }
 
+
 /**
- * Browse command: Returns posts from users based upon limit provided. Stops for invalid limit.
+ * Usage: npm run start browse limitString 
+ * Returns posts from users based upon limit provided. Stops for invalid limit.
  */
 export async function handlerBrowse(cmdName: string, ...args: string[]): Promise<void> {
     // Parses input limit to a number.

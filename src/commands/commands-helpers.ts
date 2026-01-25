@@ -58,18 +58,6 @@ export async function checkFeedByUrl(feedUrl: string): Promise<Feed> {
 // ------------------------------
 
 
-/* Helper function that returns next feed by timestamp to scrape. 
- * getNextFeedToFetch(): Retrieves null first. Then oldest timestamp.
- * updateFetchedTime(): Updates feeed timestamps fetch time.
- */
-async function checkFeedsByTimestamps(): Promise<Feed> {
-    // Get the next feed to fetch.
-    const feed = await getNextFeedToFetch();
-    if (!feed) throw new Error('No feeds available to fetch.');
-    await updateFetchedTime(feed.id);
-    return feed;
-}
-
 /* Helper function to print field item titles if present in rss feed. */
 function printFeedItemTitles(rssFeed: RSSFeed): string[] {
     const titles = rssFeed.rss.channel.item.map(item => item.title);
@@ -83,7 +71,7 @@ export function normalizeTimeToMilliseconds(durationStr: string): number {
     // Catch a match for expected regex pattern.
     const regex = /^(\d+)(ms|s|m|h)$/;
     const match = durationStr.match(regex);
-    if (!match) throw new Error(`Invalid duration string: ${durationStr}. Expected format: <number><ms|s|m|h>`);
+    if (!match) throw new Error(`Invalid duration string "${durationStr}". Expected format: <number><ms|s|m|h>`);
 
     // Catch numerical value and units from match.
     const value = Number(match[1]);
@@ -100,14 +88,26 @@ export function normalizeTimeToMilliseconds(durationStr: string): number {
 }
 
 
+/* Helper function that returns next feed by timestamp to scrape. 
+ * getNextFeedToFetch(): Retrieves null first. Then oldest timestamp.
+ * updateFetchedTime(): Updates feeed timestamps fetch time.
+ */
+async function checkFeedsByTimestamps(): Promise<Feed> {
+    // Get the next feed to fetch. NULLs first, then by oldest timestamps.
+    const feed = await getNextFeedToFetch();
+    if (!feed) throw new Error('No feeds available to fetch.');
+    await updateFetchedTime(feed.id);
+    return feed;
+}
+
+
 /* 
- * Aggregation function that fetches the next feed, retrieves its posts,
- * and saves them to the database. Each post is guaranteed by fetchFeed()
- * to have the required fields. Individual insert failures are caught
- * and logged without stopping the rest of the items.
+ * Fetches the next RSS feed by timestamp, retrieves its items, and saves them to the posts table.
+ * Feed selection is global and does not depend on users or follow relationships.
+ * Individual insert failures are logged without stopping aggregation.
  */
 export async function scrapeFeeds(): Promise<void> {
-    // Get the next feed to fetch.
+    // Get the next feed to fetch. NULLs first, then by oldest timestamps.
     const feed = await checkFeedsByTimestamps();
 
     // Fetch normalized rss data and use it to retrieve feed items.
@@ -115,11 +115,13 @@ export async function scrapeFeeds(): Promise<void> {
     const rssXML = await fetchFeed(requestURL);
     const items = rssXML.rss.channel.item;
 
-    // Save each valid post to the database.
+    // Save rss items to posts table with updated pubDate values.
+    console.log(`Success: Saved new feed items from "${feed.name}" feed.`);
     for (const item of items) {
         try {
             const publishedAt = new Date(item.pubDate);
             await createPost(item.title, item.link, item.description, publishedAt, feed.id);
+            console.log(`- Feed title: ${item.title}`);
         } catch (err) {
             console.error(`Failed to save post "${item.title}":`, err);
         }
