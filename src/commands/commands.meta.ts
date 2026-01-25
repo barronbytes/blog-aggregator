@@ -1,7 +1,7 @@
 import * as UserCmds from "./commands-users.js";
 import * as FeedCmds from "./commands-feeds.js";
 import * as FeedsFollowsCmds from "./commands-feedsfollows.js";
-import * as RssCmds from "./commands-rss.js";
+import * as PostCmds from "./commands-posts.js";
 
 
 /**
@@ -20,8 +20,8 @@ export const COMMANDS = {
   FOLLOW: { name: "follow", args: 1, handler: FeedsFollowsCmds.handlerFollow },
   FOLLOWING: { name: "following", args: 0, handler: FeedsFollowsCmds.handlerFollowing },
   UNFOLLOW: { name: "unfollow", args: 1, handler: FeedsFollowsCmds.handlerUnfollow },
-  AGGREGATOR: { name: "agg", args: 1, handler: RssCmds.handlerAggregator },
-  BROWSE: { name: "browse", args: 1, handler: RssCmds.handlerBrowse },
+  AGGREGATOR: { name: "agg", args: 1, handler: PostCmds.handlerAggregator },
+  BROWSE: { name: "browse", args: 1, handler: PostCmds.handlerBrowse },
 } as const;
 
 

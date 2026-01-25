@@ -1,5 +1,5 @@
 import * as Helpers from "./commands-helpers.js";
-import { getPostsForUser } from "src/db/db-posts-queries.js";
+import { getPostsForUser, getPostCountForUser } from "src/db/db-posts-queries.js";
 
 
 /**
@@ -38,7 +38,7 @@ export async function handlerBrowse(cmdName: string, ...args: string[]): Promise
     const limit = Number(args[0]);
 
     if(isNaN(limit) || limit < 0) {
-        console.warn(`Invalid limit "${args[0]}" provided. Must provide a non-negative number.`);
+        console.warn(`Error: Invalid limit "${args[0]}" provided. Must provide a non-negative number.`);
         return;
     }
 
@@ -54,7 +54,10 @@ export async function handlerBrowse(cmdName: string, ...args: string[]): Promise
         return;
     }
 
-    console.log(`Showing the latest ${posts.length} posts for ${user.name}:`);
+    // Get total number of posts followed by user.
+    const postsCount = await getPostCountForUser(user.id);
+
+    console.log(`Success: Showing recent ${posts.length} out of ${postsCount} feed posts followed by ${user.name}:`);
     for (const post of posts) {
         console.log(`- post(title: ${post.title}, url: ${post.url}, pubDate: ${post.publishedAt})`);
     }

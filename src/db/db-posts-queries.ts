@@ -6,7 +6,7 @@
  * UPDATE: https://orm.drizzle.team/docs/update
  * DELETE: https://orm.drizzle.team/docs/delete
  */
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, count } from "drizzle-orm";
 import { db } from "./db-client.js";
 import { posts } from "../../data/schemas/posts-table.schema.js"; 
 import { FeedsFollows } from "../../data/schemas/feeds-follows-table.schema.js";
@@ -54,4 +54,18 @@ export async function getPostsForUser(userId: string, rows: number): Promise<Pos
     .orderBy(desc(posts.publishedAt))       // most recent first
     .limit(rows);
   return results.map(row => row.posts);
+}
+
+
+/* READ: Returns total number of posts from feeds followed by the given user. */
+export async function getPostCountForUser(userId: string): Promise<number> {
+  const [result] = await db
+    .select({ count: count() })
+    .from(posts)
+    .innerJoin(
+      FeedsFollows,
+      eq(posts.feedId, FeedsFollows.feedId)
+    )
+    .where(eq(FeedsFollows.userId, userId));
+  return result.count;
 }
