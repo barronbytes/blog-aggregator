@@ -2,7 +2,7 @@
 
 CLI-based application for fetching data from any RSS feed. User commands trigger TypeScript functions that execute PostgreSQL operations and return user, feed, follow, and post data as terminal output.
 
-![This app downloads RSS items for any RSS feed.](./public/project-banner.png)
+![This app downloads RSS items for any RSS feed.](./public/project-banner-image.png)
 
 ## Tech Stack
 
