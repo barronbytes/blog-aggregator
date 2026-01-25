@@ -1,5 +1,4 @@
 import { getArguments } from "./arguments.js";
-import { readConfig } from "./file-handling.js";
 import type { CommandRegistry } from "./commands/commands.types.js";
 import { COMMANDS, type CommandMeta } from "./commands/commands.meta.js";
 import * as Cmds from "./commands/commands.js";
@@ -24,12 +23,6 @@ async function main(): Promise<void> {
 
     // Runs a command handler from registry. Throws error if not found.
     await Cmds.runCommand(registry, cmdName, ...cmdArgs);
-
-    // Read and print the JSON file
-    const currentConfig = readConfig();
-    const dbUser = currentConfig.currentUserName;
-    const dbConnection = currentConfig.dbUrl;
-    console.log(`Database information: (user: ${dbUser}, connection: ${dbConnection}`);
 
     // Exit program
     process.exit(0);
