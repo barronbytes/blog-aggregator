@@ -141,11 +141,19 @@ Here are valid `COMMAND [ARGUMENTS]` combinations by table. Of special note is t
 
 **Functional Requirements:**
 
-...
+- CLI frontend accepts user commands to fetch RSS feeds and interact with PostgreSQL tables
+- Table users: users can register, login, and list all users
+- Table feeds: users can save and return normalized feeds
+- Table feeds_follows: users can (un)follow feeds and return all followed feeds
+- Table posts: users can save and return normalized post items
 
 **Non-Functional Requirements:**
 
-...
+- Low latency: aim for response times under ~200ms
+- Scalability: support up to ~1k daily active users (DAU)
+- CAP consideration: prioritize consistency (accuracy) over availability
+- Reliability: prevent duplicate entities, validate and normalize data
+- Rate limiting: set request time limits to avoid DOS attack flag from servers
 
 ### 2. Core Entities
 
