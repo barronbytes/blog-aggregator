@@ -157,7 +157,9 @@ Here are valid `COMMAND [ARGUMENTS]` combinations by table. Of special note is t
 
 ### 2. Core Entities
 
-...
+PostgreSQL is used locally with four tables locally. Of these, `feeds_follows` is a join table tracking what `feeds` the `users` follow. The `posts` table stores RSS feed items. Data is validated with Zod schemas and normalized across all tables.
+
+![Four table schemas are used in this project.](./public/schemas.PNG)
 
 ### 3. API (or Interface)
 
