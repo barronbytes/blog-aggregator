@@ -184,7 +184,7 @@ CLI Command
 
 #### API Modules
 
-The API is composed of query modules that encapsulate database operations:
+The API is composed of query modules that encapsulate database operations. Each API function performs a single, well-defined database operation and returns normalized data to the command layer.
 
 **Users API:**
 
