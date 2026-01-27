@@ -163,7 +163,36 @@ PostgreSQL is used locally with four tables locally. The `feeds_follows` table s
 
 ### 3. API (or Interface)
 
-...
+This application uses a **module-level, function-based API** to translate user CLI commands into database operations and terminal output. **No HTTP endpoints** are used. Instead, exported query functions accept validated input from command handlers and execute database operations via Drizzle ORM.
+
+#### Architecture
+
+```
+CLI Command
+  → Command Handler              # Application layer (input parsing, orchestration, output)
+    → Schema Files               # Data contract and constraints
+      → Query Function (API)     # Data access layer (API surface)
+        → Drizzle ORM            # Maps TypeScript objects ⟷ SQL 
+          → PostgreSQ            # CRUD operations
+             → Terminal Output   # Success or failure messages
+
+# File Locations:
+- Command Handlers: ./src/commands/
+- Schema Files: ./data/schemas/
+- Query Functions: ./src/db
+```
+
+#### API Modules
+
+The API is composed of query modules that encapsulate database operations:
+
+**Users API:**
+
+**Feeds API:**
+
+**FeedsFollows API:**
+
+**Posts API:**
 
 ### 4. Data Flow
 
