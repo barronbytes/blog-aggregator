@@ -217,7 +217,26 @@ The API is composed of query modules that encapsulate database operations. Each 
 
 ### 4. Data Flow
 
-...
+The system follows a **command-driven, synchronous data flow** model, where user input is transformed into **validated, normalized data** before being persisted to a local database. All flows originate from the CLI and end as terminal output. No background jobs, queues, or asynchronous pipelines are used.
+
+**General Flow Pattern:**
+
+```
+User Input (CLI)
+  → Argument Parsing (getArguments())           # ./src/arguments.ts
+    → Command Resolution (COMMANDS registry)    # ./src/commands/commands-meta.ts
+      → Command Dispatcher (runCommand())       # ./src/commands/commands.ts
+        → Command Handler                       # ./src/commands/*
+          → Input Validation / Normalization    # ./src/api/*
+            → Query Function (API Module)       # ./src/db/*
+              → Drizzle ORM                     # SQL abstraction layer
+                → PostgreSQL                    # CRUD operations
+              ← Result Set
+            ← Normalized Domain Object
+        ← Application Logic / Formatting        # ./src/commands/commands-*.ts
+      ← Handler Completion
+  → Terminal Output
+```
 
 ### 5. High Level Design
 
