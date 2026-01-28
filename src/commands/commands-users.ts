@@ -1,5 +1,5 @@
 import { readConfig, updateUsername } from "../file-handling.js";
-import { createUser, getUsers, getUserByName, resetTable } from "../db/db-users-queries.js";
+import { createUser, getUsers, getUserByName, resetUsers } from "../db/db-users-queries.js";
 
 
 /**
@@ -85,7 +85,7 @@ export async function handlerLogin(cmdName: string, ...args: string[]): Promise<
  */
 export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {
     // Deletes all rows from users table.
-    await resetTable();
+    await resetUsers();
 
     // Success message
     console.log("Success: Deleted all users from the users table.");

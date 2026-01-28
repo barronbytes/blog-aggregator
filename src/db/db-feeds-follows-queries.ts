@@ -49,7 +49,7 @@ export async function getFeedFollow(feedId: string, userId: string): Promise<Fee
 
 
 /* READ: Returns the feed ids the current user follows. */
-export async function getFollowedFeedIds(userId: string): Promise<string[]> {
+export async function getFeedIdsFollowedByUserId(userId: string): Promise<string[]> {
   const result = await db
     .select()
     .from(FeedsFollows)
@@ -59,7 +59,7 @@ export async function getFollowedFeedIds(userId: string): Promise<string[]> {
 
 
 /* DELETE: Deletes single row from  table. */
-export async function deleteEntry(feedId: string, userId: string): Promise<void> {
+export async function deleteFeedFollow(feedId: string, userId: string): Promise<void> {
   await db
     .delete(FeedsFollows)
     .where(

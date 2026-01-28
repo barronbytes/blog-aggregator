@@ -1,4 +1,4 @@
-import { createFeedFollow, getFeedFollow, getFollowedFeedIds, deleteEntry } from "../db/db-feeds-follows-queries.js";
+import { createFeedFollow, getFeedFollow, getFeedIdsFollowedByUserId, deleteFeedFollow } from "../db/db-feeds-follows-queries.js";
 import { getFeedByName, getFeedNameById } from "../db/db-feeds-queries.js";
 import { readConfig } from "../file-handling.js";
 import { checkCurrentUser, checkFeedByName } from "./commands-helpers.js";
@@ -52,7 +52,7 @@ export async function handlerFollowing(cmdName: string, ...args: string[]): Prom
     const user = await checkCurrentUser();
 
     // Get feed IDs user follows
-    const feedIds = await getFollowedFeedIds(user.id);
+    const feedIds = await getFeedIdsFollowedByUserId(user.id);
 
     // Normalize feed names per field id
     const feedNames = (await Promise.all(
@@ -79,7 +79,7 @@ export async function handlerUnfollow(cmdName: string, ...args: string[]): Promi
     const user = await checkCurrentUser();
 
     // Deletes all rows from users table.
-    await deleteEntry(feed.id, user.id);
+    await deleteFeedFollow(feed.id, user.id);
 
     // Success message
     console.log(`Success: User ${user.name} no longer follows feed ${feed.name}.`);

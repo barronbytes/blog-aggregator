@@ -65,7 +65,7 @@ export async function getUserByID(userID: string): Promise<User | undefined> {
 
 
 /* DELETE: Deletes all rows in the users table. */
-export async function resetTable(): Promise<void> {
+export async function resetUsers(): Promise<void> {
   await db
     .delete(users);
 }

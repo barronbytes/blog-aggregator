@@ -88,7 +88,7 @@ export async function getNextFeedToFetch(): Promise<Feed | undefined> {
 
 
 /* UPDATE: Marks a feed as fetched by setting timestamps. */
-export async function updateFetchedTime(feedId: string): Promise<void> {
+export async function updateFeedFetchedTime(feedId: string): Promise<void> {
   await db
     .update(feeds)
     .set({

@@ -191,7 +191,7 @@ The API is composed of query modules that encapsulate database operations. Each 
 - `createUser(name: string) → Promise<User>`
 - `getUserByName(username: string): Promise<User | undefined>`
 - `getUserByID(userID: string): Promise<User | undefined>`
-- `resetTable(): Promise<void>`
+- `resetUsers(): Promise<void>`
 
 **Feeds API:**
 
@@ -200,19 +200,19 @@ The API is composed of query modules that encapsulate database operations. Each 
 - `getFeedByName(feedName: string): Promise<Feed | undefined>`
 - `getFeedByUrl(feedUrl: string): Promise<Feed | undefined>`
 - `getFeedNameById(feedId: string): Promise<string | undefined>`
-- `getNextFeedToFetch(): Promise<Feed | undefined>`
-- `updateFetchedTime(feedId: string): Promise<void>`
+- `getNextFeedToFetch(): Promise<Feed | undefined>`: orders results by last_fetched_at value, retrieving nulls first, then oldest
+- `updateFeedFetchedTime(feedId: string): Promise<void>`: uses `new Date()` function to update updated_at and last_fetched_at
 
 **FeedsFollows API:**
 
 - `createFeedFollow(feedId: string, userId: string): Promise<FeedFollow>`
 - `getFeedFollow(feedId: string, userId: string): Promise<FeedFollow | undefined>`
-- `getFollowedFeedIds(userId: string): Promise<string[]>`
-- `deleteEntry(feedId: string, userId: string): Promise<void>`
+- `getFeedIdsFollowedByUserId(userId: string): Promise<string[]>`
+- `deleteFeedFollowed(feedId: string, userId: string): Promise<void>`
 
 **Posts API:**
 
-- `createPost(title: string, url: string, description: string, publishedAt: Date, feedId: string): Promise<Post>`
+- `createPost(title: string, url: string, description: string, publishedAt: Date, feedId: string): Promise<Post>`: recieves normalized rss feed item data for post creation (read data section for details)
 - `getPostsForUser(userId: string, rows: number): Promise<Post[] | undefined>`
 
 ### 4. Data Flow

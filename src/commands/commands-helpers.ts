@@ -1,6 +1,6 @@
 import { readConfig } from "../file-handling.js";
 import { User, getUserByName } from "../db/db-users-queries.js";
-import { Feed, getFeedByUrl, getFeedByName, getNextFeedToFetch, updateFetchedTime } from "../db/db-feeds-queries.js";
+import { Feed, getFeedByUrl, getFeedByName, getNextFeedToFetch, updateFeedFetchedTime } from "../db/db-feeds-queries.js";
 import { createPost } from "src/db/db-posts-queries.js";
 import { fetchFeed } from "../api/rss.js";
 import type { RSSFeed } from "src/api/rss.types.js";
@@ -90,13 +90,13 @@ export function normalizeTimeToMilliseconds(durationStr: string): number {
 
 /* Helper function that returns next feed by timestamp to scrape. 
  * getNextFeedToFetch(): Retrieves null first. Then oldest timestamp.
- * updateFetchedTime(): Updates feeed timestamps fetch time.
+ * updateFeedFetchedTime(): Updates feeed timestamps fetch time.
  */
 async function checkFeedsByTimestamps(): Promise<Feed> {
     // Get the next feed to fetch. NULLs first, then by oldest timestamps.
     const feed = await getNextFeedToFetch();
     if (!feed) throw new Error('No feeds available to fetch.');
-    await updateFetchedTime(feed.id);
+    await updateFeedFetchedTime(feed.id);
     return feed;
 }
 
