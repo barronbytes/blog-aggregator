@@ -188,11 +188,32 @@ The API is composed of query modules that encapsulate database operations. Each 
 
 **Users API:**
 
+- `createUser(name: string) → Promise<User>`
+- `getUserByName(username: string): Promise<User | undefined>`
+- `getUserByID(userID: string): Promise<User | undefined>`
+- `resetTable(): Promise<void>`
+
 **Feeds API:**
+
+- `createFeed(name: string, url: string, userId: string): Promise<Feed>`
+- `getFeeds(): Promise<Feed[]>`
+- `getFeedByName(feedName: string): Promise<Feed | undefined>`
+- `getFeedByUrl(feedUrl: string): Promise<Feed | undefined>`
+- `getFeedNameById(feedId: string): Promise<string | undefined>`
+- `getNextFeedToFetch(): Promise<Feed | undefined>`
+- `updateFetchedTime(feedId: string): Promise<void>`
 
 **FeedsFollows API:**
 
+- `createFeedFollow(feedId: string, userId: string): Promise<FeedFollow>`
+- `getFeedFollow(feedId: string, userId: string): Promise<FeedFollow | undefined>`
+- `getFollowedFeedIds(userId: string): Promise<string[]>`
+- `deleteEntry(feedId: string, userId: string): Promise<void>`
+
 **Posts API:**
+
+- `createPost(title: string, url: string, description: string, publishedAt: Date, feedId: string): Promise<Post>`
+- `getPostsForUser(userId: string, rows: number): Promise<Post[] | undefined>`
 
 ### 4. Data Flow
 
