@@ -360,6 +360,8 @@ CLI: agg <feedUrl>
 
 ### 5. High Level Design
 
+The project currently represents a single-node, command-driven CLI application that runs locally and uses a PostgreSQL database for persistent storage. Application behavior is orchestrated through synchronous command handlers, with no backend server, HTTP API, or background workers. External data is fetched on demand and normalized before persistence. Noticeable improvements could be made to increase robustness and scalability.
+
 ```
 ┌───────────────────────────────┐
 │         CLI Interface         │
