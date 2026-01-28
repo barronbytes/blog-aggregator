@@ -182,6 +182,8 @@ CLI Command
 - Query Functions: ./src/db
 ```
 
+---
+
 #### API Modules
 
 The API is composed of query modules that encapsulate database operations. Each API function performs a single, well-defined database operation and returns normalized data to the command layer.
@@ -237,6 +239,43 @@ User Input (CLI)
       ← Handler Completion
   → Terminal Output
 ```
+
+---
+
+#### Code-Level Responsibility
+
+**Entry Point: `index.ts`**
+
+Users run app with `npm run start COMMAND [ARGUMENTS]` command. This file parses raw CLI input to determine supplied command names and optional arguments. Dynamically builds `registry`, a dictionary of function handler contracts. **Coordinates control flow** without domain logic.
+
+
+```
+await Cmds.runCommand(registry, cmdName, ...cmdArgs);
+``` 
+
+**Command Registration: `commands-meta.ts`, `commands-types.ts`**
+
+Act as **contracts between user input and application behavior**. Defines required mapping between command names and argument numbers with command handler functions. Errors throw if contracts violated.
+
+```
+export const COMMANDS = {
+  CMDKEY: { name: ..., args: ..., handler: ... },
+} as const;
+```
+
+**Command Dispatch: `commands.ts`**
+
+This layer dynamically determines function handler to use and executes it with supplied arguments.
+
+```
+const handler = registry[cmdName];
+
+await handler(cmdName, ...args);
+```
+
+**Command Handlers: `commands-*.ts`**
+
+These files **orchestrate workflows** by parsing arguments, calling helper functions, and invoking query functions to determine formatted terminal outputs. Handlers **do not** perform raw SQl and data validation themselves.
 
 ### 5. High Level Design
 
