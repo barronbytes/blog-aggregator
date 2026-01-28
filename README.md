@@ -360,7 +360,32 @@ CLI: agg <feedUrl>
 
 ### 5. High Level Design
 
-...
+```
+┌───────────────────────────────┐
+│         CLI Interface         │
+│   (User Commands + Output)    │
+└───────────────┬───────────────┘
+                │
+┌───────────────▼───────────────┐
+│       Command Handlers        │
+│  (Application Orchestration)  │
+└───────────────┬───────────────┘
+                │
+┌───────────────▼───────────────┐
+│  Validation & Normalization   │
+│   (RSS Fetch + Zod Schemas)   │
+└───────────────┬───────────────┘
+                │
+┌───────────────▼───────────────┐
+│        Query API Layer        │
+│    (Drizzle ORM Functions)    │
+└───────────────┬───────────────┘
+                │
+┌───────────────▼───────────────┐
+│          PostgreSQL           │
+│     (Persistent Storage)      │
+└───────────────────────────────┘
+```
 
 ## Credits and Contributing
 
