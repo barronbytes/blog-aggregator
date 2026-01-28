@@ -244,7 +244,7 @@ User Input (CLI)
 
 #### Code-Level Responsibility
 
-**1. Entry Point and Argument Parsing: `index.ts`, `arguments.ts`**
+**1. Entry Point & Argument Parsing: `index.ts`, `arguments.ts`**
 
 Users run app with `npm run start COMMAND [ARGUMENTS]` command. CLI input gets parsed to determine supplied command names and optional arguments. Dynamically build `registry`, a dictionary of function handler contracts. **Coordinate control flow** without domain logic.
 
@@ -360,7 +360,7 @@ CLI: agg <feedUrl>
 
 ### 5. High Level Design
 
-The project currently represents a single-node, command-driven CLI application that runs locally and uses a PostgreSQL database for persistent storage. Application behavior is orchestrated through synchronous command handlers, with no backend server, HTTP API, or background workers. External data is fetched on demand and normalized before persistence. Noticeable improvements could be made to increase robustness and scalability.
+The project currently represents a **single-node, command-driven CLI application** that runs locally and uses a PostgreSQL database for persistent storage. Application behavior is orchestrated through synchronous command handlers, with no backend server, HTTP API, or background workers. External data is fetched on demand and normalized before persistence. Noticeable improvements could be made to increase robustness and scalability.
 
 ```
 ┌───────────────────────────────┐
@@ -388,6 +388,18 @@ The project currently represents a single-node, command-driven CLI application t
 │     (Persistent Storage)      │
 └───────────────────────────────┘
 ```
+
+### 6. Deep Dive Design
+
+The project frontend could be extended with TypeScript to reload reusable components on a web application. The backend could be enhanced as follows:
+
+**Low latency:** Aim for response times under ~200ms
+
+The current problem is that `handlerFeeds()` introduces an _N+1 database query pattern_ when listing feeds, while `handlerAggregator()` triggers repeated network-bound fetches that external servers may treat as _bot traffic_. This can be improved by **batching** related database queries and refining the aggregation schedule to reduce the **volume** of external HTTP requests. Together, these changes reduce redundant database and network load, improving overall latency.
+
+**Scalability & Security:** Support up to ~1k daily active users (DAU)
+
+Multiple users cannot use the app concurrently, as it runs in a _single Node_ process and automatically logs as the previous user (`index.ts`, `file-handling.ts`). Introducing a login step via a **REPL to authenticate users** before granting access, along with isolated, **stateless sessions** for each user, would decouple user state from the Node process. This allows the app to handle multiple users independently and improves authentication security.
 
 ## Credits and Contributing
 
