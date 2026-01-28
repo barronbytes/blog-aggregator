@@ -244,26 +244,26 @@ User Input (CLI)
 
 #### Code-Level Responsibility
 
-**Entry Point: `index.ts`**
+**1. Entry Point and Argument Parsing: `index.ts`, `arguments.ts`**
 
-Users run app with `npm run start COMMAND [ARGUMENTS]` command. This file parses raw CLI input to determine supplied command names and optional arguments. Dynamically builds `registry`, a dictionary of function handler contracts. **Coordinates control flow** without domain logic.
-
+Users run app with `npm run start COMMAND [ARGUMENTS]` command. CLI input gets parsed to determine supplied command names and optional arguments. Dynamically build `registry`, a dictionary of function handler contracts. **Coordinate control flow** without domain logic.
 
 ```
 await Cmds.runCommand(registry, cmdName, ...cmdArgs);
 ``` 
 
-**Command Registration: `commands-meta.ts`, `commands-types.ts`**
+**2. Command Registration: `commands-meta.ts`, `commands-types.ts`**
 
-Act as **contracts between user input and application behavior**. Defines required mapping between command names and argument numbers with command handler functions. Errors throw if contracts violated.
+Act as **contracts between user input and application behavior**. Define required mapping between command names and argument numbers with command handler functions. Errors thrown if contracts are violated.
 
 ```
 export const COMMANDS = {
   CMDKEY: { name: ..., args: ..., handler: ... },
+  ...
 } as const;
 ```
 
-**Command Dispatch: `commands.ts`**
+**3. Command Dispatch: `commands.ts`**
 
 This layer dynamically determines function handler to use and executes it with supplied arguments.
 
@@ -273,9 +273,90 @@ const handler = registry[cmdName];
 await handler(cmdName, ...args);
 ```
 
-**Command Handlers: `commands-*.ts`**
+**4. Command Handlers: `commands-*.ts`**
 
-These files **orchestrate workflows** by parsing arguments, calling helper functions, and invoking query functions to determine formatted terminal outputs. Handlers **do not** perform raw SQl and data validation themselves.
+These files **orchestrate workflows** by parsing arguments, calling helper functions, and invoking query functions to determine formatted terminal outputs. Handlers **do not** perform raw SQL and data validation themselves.
+
+**5. Data Validation & Normalization: `rss.ts`, `rss-types.ts`**
+
+App uses fetch() API to request external RSS data, which is structurally inconsistent. The fast-xml-parser library converts fetch responses into XML objects. Zod library used to validate data. Additional filtering and transformations normalize data. API and data error handling in place.
+
+```
+HTTP fetch
+  → XML string
+    → parsed JS object (fast-xml-parser)
+      → validated & typed JS object (Zod)
+        → item coercion + filtering
+          → normalized RSSFeed object
+```
+
+**6. SQL Queries: `queries-*.ts`, `file-handling.ts`**
+
+The application **data access layer** is defined here. Each query uses the Drizzle ORM to translate TypeScript function handlers into PostgreSQL CRUD operations. User context (the currently logged-in user) is passed into queries to log ownership for auditing purposes.
+
+---
+
+#### Example Data Flows
+
+**User Registration Flow:**
+
+```
+CLI: register <username>
+  → handlerRegister()                    # commands-users.ts
+    → getUserByName(username)
+    → createUser(username)
+      → Drizzle INSERT(users)
+        → PostgreSQL
+      ← User row
+    → update config.json
+  → Terminal output
+```
+
+**Feed Creation Flow:**
+
+```
+CLI: addfeed <name> <url>
+  → handlerAddFeed()                     # commands-feeds.ts
+    → checkCurrentUser()
+    → getFeedByUrl(url)
+    → createFeed(name, url, userId)
+      → Drizzle INSERT(feeds)
+        → PostgreSQL
+      ← Feed row
+    → createFeedFollow(feedId, userId)
+      → Drizzle INSERT(feeds_follows)
+        → PostgreSQL
+  → Terminal output
+```
+
+**Feed Follow Creation Flow:**
+
+```
+CLI: follow <feedUrl>
+  → handlerFollow()                      # commands-feedsfollows.ts
+    → checkCurrentUser()
+    → getFeedByUrl(feedUrl)
+    → getFeedFollow(feedId, userId)
+    → createFeedFollow(feedId, userId)
+      → Drizzle INSERT(feeds_follows)
+        → PostgreSQL
+  → Terminal output
+```
+
+**RSS Aggregation and Post Storage Flow:**
+
+```
+CLI: agg <feedUrl>
+  → handlerAggregator()                  # commands-posts.ts
+    → fetchFeed(feedUrl)
+      → rss.http.ts
+      → rss.types.ts
+      → rss.ts (normalization)
+    → createPost(...)
+      → Drizzle INSERT(posts)
+        → PostgreSQL
+    → updateFeedFetchedTime(feedId)
+```
 
 ### 5. High Level Design
 
